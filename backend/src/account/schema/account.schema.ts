@@ -5,6 +5,8 @@ export type AccountDocument = Account & Document;
 
 @Schema()
 export class Account{   
+    @Prop()
+    _id: mongooseSchema.Types.ObjectId;
 
     @Prop({required: true})
     username: string;
