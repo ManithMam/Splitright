@@ -1,12 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, {Document} from 'mongoose';
+import {Document, Schema as mongooseSchema} from 'mongoose';
 
 export type AccountDocument = Account & Document;
 
 @Schema()
-export class Account{
-    @Prop()
-    _id: mongoose.Schema.Types.ObjectId;
+export class Account{   
 
     @Prop({required: true})
     username: string;
@@ -15,7 +13,7 @@ export class Account{
     hashedPassword: string;
 
     @Prop()
-    games: mongoose.Schema.Types.ObjectId;
+    games: [mongooseSchema.Types.ObjectId];
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
