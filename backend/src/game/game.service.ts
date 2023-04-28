@@ -16,22 +16,23 @@ export class GameService {
     constructor(@InjectModel(Game.name) private gameModel: Model<Game>) {
     }
     
+    // TODO: change after Lobby and Account impl
     async create(createGameDto: CreateGameDto) {
         this.logger.log("Creating a recipe...");
 
         let game = {
             title: createGameDto.title,
             spliMethod: createGameDto.spliMethod,
-            code: randomstring.generate(7),     //TODO
+            code: randomstring.generate(7),
             amount: createGameDto.amount,
-            admin: null,    // TODO
+            admin: null,    // TODO: change based on token info after Account impl
         }
 
         const newGame = new this.gameModel(game);
         const result = newGame.save();
         this.logger.log("Recipe \"" + newGame.title + "\" stored successfully");
         
-        //Create and return Lobby
+        //create and return Lobby
         return {
             gameId: newGame._id.toString(),
             code: newGame.code
@@ -85,7 +86,7 @@ export class GameService {
         if (!existingGame) {
             throw new NotFoundException(`Game #${gameId} not found`);
         }
-        return existingGame;
+        return 'Game #' + gameId + ' was deleted';
     }
 
     private getResults(amount: number, splitMethod: string, allAccounts: string[]): Result[] {
