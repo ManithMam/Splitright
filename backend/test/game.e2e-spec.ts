@@ -12,7 +12,7 @@ describe('GameController (e2e)', () => {
 
   const mockGame: CreateGameDto = {
     title: 'mock game', 
-    spliMethod: 'Communist', 
+    splitMethod: 'Communist', 
     amount: 100
   };
 

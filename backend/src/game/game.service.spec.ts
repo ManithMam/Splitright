@@ -39,7 +39,7 @@ describe('GameService', () => {
 
       const gameTest: CreateGameDto = {
         title: 'game test', 
-        spliMethod: 'Communist', 
+        splitMethod: 'Communist', 
         amount: 100
       }
 

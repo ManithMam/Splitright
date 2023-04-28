@@ -1,12 +1,14 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from './dto/createGame.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { Game } from './game.schema';
 import { Model } from 'mongoose';
 import { UpdateGameDto } from './dto/updateGame.dto';
 import * as randomstring from "randomstring";
 import { Result } from './result/result.model';
 import { GetGameDto } from './dto/getGame.dto';
+import { InjectModel } from '@nestjs/mongoose';
+
+var mongoose = require('mongoose');
 
 @Injectable()
 export class GameService {
@@ -22,7 +24,7 @@ export class GameService {
 
         let game = {
             title: createGameDto.title,
-            spliMethod: createGameDto.spliMethod,
+            spliMethod: createGameDto.splitMethod,
             code: randomstring.generate(7),
             amount: createGameDto.amount,
             admin: null,    // TODO: change based on token info after Account impl
@@ -39,8 +41,13 @@ export class GameService {
         };
     }
 
-    async findById(gameId: string) {
-        const existingGame = await this.gameModel.findById(gameId);
+    async findById(gameId: String) {
+        mongoose.Types.ObjectId.isValid('your id here');
+        
+
+        //const existingGame = await this.gameModel.findById(new mongoose.Types.ObjectId(gameId));
+        const existingGame = await this.gameModel.findById(new mongoose.Types.ObjectId(gameId));
+
         if (!existingGame) {
             throw new NotFoundException(`Game #${gameId} not found`);
         }
@@ -50,14 +57,14 @@ export class GameService {
             title: existingGame.title, 
             spliMethod: existingGame.spliMethod, 
             amount: existingGame.amount,
-            admin: existingGame.admin.toString(),
+            admin: null, //existingGame.admin.toString() // TODO: to be changed after passport impl
             results: existingGame.results
         }
 
         return gameDto;
     }
 
-    async update(gameId: string, guestAccounts: string[]) {
+    async update(gameId: string, updateGameDto: UpdateGameDto) {
 
         // find game
         let existingGame = await this.gameModel.findById(gameId);
@@ -66,19 +73,25 @@ export class GameService {
         }
 
         // add admin to the list of account
-        let allAccounts: string[] = guestAccounts;
-        allAccounts.push(existingGame.admin.toString())
+        let allAccounts: string[] = updateGameDto.guestAccounts;
+        // TODO: change after passport impl
+        if(existingGame.admin) {
+            allAccounts.push(existingGame.admin.toString())
+        }
+        else {
+            allAccounts.push("admin placeholder")
+        }
 
         // get results
         const results: Result[] = this.getResults(existingGame.amount, existingGame.spliMethod, allAccounts)
 
         // update game
-        let updatedGame: UpdateGameDto = {
+        let updatedGame = {
             results: results
         }
         existingGame = await this.gameModel.findByIdAndUpdate(gameId, updatedGame, { new: true });
 
-        return 'Results for game #' + gameId + ' have been updated';
+        return existingGame;
     }
 
     async delete(gameId: string) {

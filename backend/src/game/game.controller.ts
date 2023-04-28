@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/createGame.dto';
+import { UpdateGameDto } from './dto/updateGame.dto';
 
 @Controller('games')
 export class GameController {
@@ -22,9 +23,9 @@ export class GameController {
     @Patch(':id')
     async updateById(
         @Param('id') gameId: string, 
-        @Body() body: {guestAccounts: string[]}) {
+        @Body() updateGameDto: UpdateGameDto) {
 
-        return this.gameService.update(gameId, body.guestAccounts);
+        return this.gameService.update(gameId, updateGameDto);
     }
 
     @Delete(':id')
