@@ -56,6 +56,30 @@ export class GameService {
         return gameDto;
     }
 
+    async update(gameId: string, guestAccounts: string[]) {
+
+        // find game
+        let existingGame = await this.gameModel.findById(gameId);
+        if (!existingGame) {
+            throw new NotFoundException(`Game #${gameId} not found`);
+        }
+
+        // add admin to the list of account
+        let allAccounts: string[] = guestAccounts;
+        allAccounts.push(existingGame.admin.toString())
+
+        // get results
+        const results: Result[] = this.getResults(existingGame.amount, existingGame.spliMethod, allAccounts)
+
+        // update game
+        let updatedGame: UpdateGameDto = {
+            results: results
+        }
+        existingGame = await this.gameModel.findByIdAndUpdate(gameId, updatedGame, { new: true });
+
+        return 'Results for game #' + gameId + ' have been updated';
+    }
+
     async delete(gameId: string) {
         const existingGame = await this.gameModel.findByIdAndDelete(gameId);
         if (!existingGame) {
@@ -64,30 +88,63 @@ export class GameService {
         return existingGame;
     }
 
-    async enter(gameId: string) {
-        const existingGame = await this.gameModel.findByIdAndDelete(gameId);
-        if (!existingGame) {
-            throw new NotFoundException(`Game #${gameId} not found`);
-        }
-        return existingGame;
-    }
+    private getResults(amount: number, splitMethod: string, allAccounts: string[]): Result[] {
+        
+        const numberOfResults = allAccounts.length; // + the game owner
+        let amounts: number[] = []
+        let results: Result[] = []
 
-    private splitAmount(amount: number, splitMethod: string, results: Result[]) {
-        const amountOfUsers = results.length;
-
+        // get amounts for the results
         switch(splitMethod) {
             case 'Communist':
-                console.log("Communist")
+                let equalAmount: number = Number((amount / numberOfResults).toFixed(2));  // split and round to 2 digits after the comma
+                for(let i=1; i <= numberOfResults; i++) {
+                    amounts.push(equalAmount)
+                }
                 break;
             case 'Lucky':
+                // TODO: impl
                 console.log('Lucky')
                 break;
             case 'Random':
+                // TODO: impl
                 console.log('Random')
                 break;
             default:
                 throw new NotFoundException(`Split method not found`);
         }
 
+        // randomize the order of amounts
+        amounts = this.shuffleAmounts(amounts);
+
+        // assign amount to account
+        for(let i=0; i < numberOfResults; i++) {
+            let result: Result = {
+                account: allAccounts.at(i),
+                amount: amounts.at(i)
+            }
+            results.push(result)
+        }
+        
+        return results;
     }
+
+    // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+    private shuffleAmounts(array: number[]) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
 }

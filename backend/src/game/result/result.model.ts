@@ -1,4 +1,4 @@
 export class Result {
-    name: string;
+    account: string;
     amount: number;
 }

@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/createGame.dto';
-import { UpdateGameDto } from './dto/updateGame.dto';
 
 @Controller('games')
 export class GameController {
@@ -18,12 +17,14 @@ export class GameController {
         return this.gameService.findById(gameId);
     }
 
+    // the request is send from the game admin when starting a game
+    // the game admin sends gameId and their current lobby.guests list 
     @Patch(':id')
     async updateById(
         @Param('id') gameId: string, 
-        @Body() updateGameDto: UpdateGameDto) {
+        @Body() body: {guestAccounts: string[]}) {
 
-        return this.gameService.update(gameId, updateGameDto);
+        return this.gameService.update(gameId, body.guestAccounts);
     }
 
     @Delete(':id')
