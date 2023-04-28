@@ -24,7 +24,7 @@ export class GameService {
 
         let game = {
             title: createGameDto.title,
-            spliMethod: createGameDto.splitMethod,
+            splitMethod: createGameDto.splitMethod,
             code: randomstring.generate(7),
             amount: createGameDto.amount,
             admin: null,    // TODO: change based on token info after Account impl
@@ -55,7 +55,7 @@ export class GameService {
         const gameDto: GetGameDto = {
             id: existingGame._id.toString(), 
             title: existingGame.title, 
-            spliMethod: existingGame.spliMethod, 
+            splitMethod: existingGame.splitMethod, 
             amount: existingGame.amount,
             admin: null, //existingGame.admin.toString() // TODO: to be changed after passport impl
             results: existingGame.results
@@ -83,7 +83,7 @@ export class GameService {
         }
 
         // get results
-        const results: Result[] = this.getResults(existingGame.amount, existingGame.spliMethod, allAccounts)
+        const results: Result[] = this.getResults(existingGame.amount, existingGame.splitMethod, allAccounts)
 
         // update game
         let updatedGame = {
