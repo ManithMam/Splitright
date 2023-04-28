@@ -2,17 +2,19 @@ import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { CreateGameDto } from 'src/game/dto/createGame.dto';
-import { GameModule } from 'src/game/game.module';
 import { AppModule } from './../src/app.module';
+import { SplitMethod } from 'src/game/splitMethod.enum';
 
 describe('GameController (e2e)', () => {
   let app: INestApplication;
 
-  const gamesUrl = `http://localhost:3000/games`;
+  const gamesUrl = `http://localhost:3000/games/`;
+
+  let existingGameId: string = "";
 
   const mockGame: CreateGameDto = {
     title: 'mock game', 
-    splitMethod: 'Communist', 
+    splitMethod: SplitMethod.Communist, 
     amount: 100
   };
 
@@ -47,7 +49,28 @@ describe('GameController (e2e)', () => {
                 expect(typeof gameId).toBe("string"),
                 expect(typeof code).not.toBeNull,
                 expect(typeof code).toBe("string")
+
+                existingGameId = gameId;
             })
+    })
+  })
+
+  // TODO: ask
+  /*describe("/games/:id (GET)", () => {
+    it("it should reaturn a game based on id", () => {
+        return request(gamesUrl)
+            .post(existingGameId)
+            .send()
+            .expect(200)
+    })
+  })*/
+
+  describe("/games/:id (GET)", () => {
+    it("it should reaturn a game based on id", () => {
+        return request(gamesUrl)
+            .post("644bd06b36d366d2bf5bead8")
+            .send()
+            .expect(404)
     })
   })
 
