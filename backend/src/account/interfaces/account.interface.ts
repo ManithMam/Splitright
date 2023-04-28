@@ -1,6 +1,6 @@
-export interface Account {
-    _id: string,
+export interface IAccount {
+    id?: string,
     username: string,
     password: string,
-    games: [string]
+    games?: [string]
 }
