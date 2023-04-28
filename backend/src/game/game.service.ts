@@ -113,16 +113,26 @@ export class GameService {
             case 'Communist':
                 let equalAmount: number = Number((amount / numberOfResults).toFixed(2));  // split and round to 2 digits after the comma
                 for(let i=1; i <= numberOfResults; i++) {
-                    amounts.push(equalAmount)
+                    amounts.push(equalAmount);
                 }
                 break;
             case 'Lucky':
-                // TODO: impl
-                console.log('Lucky')
+                amounts.push(amount);
+                for(let i=1; i <= numberOfResults - 1; i++) {
+                    amounts.push(0);
+                }
                 break;
             case 'Random':
-                // TODO: impl
-                console.log('Random')
+
+                let min = 0;
+                let max = amount;
+                for(let i=1; i <= numberOfResults - 1; i++) {
+                    let tempAmount = Number((Math.random() * (max - min) + min).toFixed(2));
+                    amounts.push(tempAmount);
+                    max -= tempAmount;
+                }
+                amounts.push(max)
+
                 break;
             default:
                 throw new NotFoundException(`Split method not found`);
