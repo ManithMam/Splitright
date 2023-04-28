@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { UpdateGameDto } from './dto/updateGame.dto';
 import * as randomstring from "randomstring";
 import { Result } from './result/result.model';
+import { GetGameDto } from './dto/getGame.dto';
 
 @Injectable()
 export class GameService {
@@ -42,17 +43,17 @@ export class GameService {
         if (!existingGame) {
             throw new NotFoundException(`Game #${gameId} not found`);
         }
-        return existingGame;
-    }
 
-    async update(gameId: string, updateGame: UpdateGameDto) {
-        const existingGame = await this.gameModel.findByIdAndUpdate(gameId, updateGame, { new: true });
-        if (!existingGame) {
-            throw new NotFoundException(`Game #${gameId} not found`);
+        const gameDto: GetGameDto = {
+            id: existingGame._id.toString(), 
+            title: existingGame.title, 
+            spliMethod: existingGame.spliMethod, 
+            amount: existingGame.amount,
+            admin: existingGame.admin.toString(),
+            results: existingGame.results
         }
 
-        // TODO get results
-        return existingGame;
+        return gameDto;
     }
 
     async delete(gameId: string) {
