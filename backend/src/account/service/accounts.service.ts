@@ -4,13 +4,14 @@ import { Model, Schema } from 'mongoose';
 import { Account } from '../schema/account.schema';
 import { CreateAccountDTO } from '../dto/createAccountDTO';
 import { updateAccountGameDto } from '../dto/updateAccountGameDTO';
+import { loginDto } from '../dto/loginDTO';
 
 @Injectable()
 export class AccountsService {
     constructor(@InjectModel(Account.name) private accountModel: Model<Account>) {}   
 
-    async findAccount(username: string, password: string): Promise<Account>{
-        const account = await this.accountModel.findOne({username: username, password: password}).exec()        
+    async findAccount(accountToFind: loginDto): Promise<Account>{
+        const account = await this.accountModel.findOne(accountToFind).exec()        
          return account
     }
 
