@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { Account } from '../schema/account.schema';
 import { CreateAccountDTO } from '../dto/createAccountDTO';
-import { updateAccountGameDto } from '../dto/updateAccountGameDTO';
+
 import { loginDto } from '../dto/loginDTO';
 
 @Injectable()
@@ -31,18 +31,17 @@ export class AccountsService {
         return 'Account with id ' + accountId + ' was deleted.'
     }
 
-    async updateUserGamesAdd(gameDto: updateAccountGameDto, id: string):  Promise<Account>{
-        const gameOid = new Schema.Types.ObjectId(gameDto.gameId)
-        const account = await this.accountModel.findById(id)        
-        account.games.push(gameOid)        
-        return account.save()
+    async updateAccountGamesAdd(gameId: string, id: string): Promise<Account>{           
+        const account = await this.accountModel.findOneAndUpdate({_id: id}, 
+            {$push: {games: gameId}}, {new: true})
+
+        return account
     }
 
-    async updateUserGamesDelete(gameDto: updateAccountGameDto, id: string):  Promise<Account>{
-        const gameOid = new Schema.Types.ObjectId(gameDto.gameId)
-        const account = await this.accountModel.findById(id)
-        const index = account.games.findIndex((_game) => _game === gameOid)
-        account.games.splice(index, 1)
-        return account.save()
+    async updateAccountGamesDelete(gameId: string, id: string): Promise<Account>{
+        const account = await this.accountModel.findOneAndUpdate({_id: id}, 
+            {$pull: {games: gameId}}, {new: true})
+        
+            return account
     }    
 }
