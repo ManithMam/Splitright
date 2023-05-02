@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as mongooseSchema, HydratedDocument} from 'mongoose';
 
-export type AccountDocument = HydratedDocument<Account>
+export type AccountDocument = HydratedDocument<Account & Document>
 
 @Schema()
 export class Account{   
@@ -13,7 +13,10 @@ export class Account{
     password: string;
 
     @Prop()
-    games: [mongooseSchema.Types.ObjectId]
+    games?: [mongooseSchema.Types.ObjectId]
+
+    @Prop()
+    avatar?: string
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
