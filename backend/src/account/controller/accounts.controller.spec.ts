@@ -1,31 +1,41 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AccountsController } from "./accounts.controller";
 import { AccountsService } from "../service/accounts.service";
+import { CreateAccountDTO } from "../dto/createAccountDTO";
+
 
 describe('AccountsController', () => {
     let controller: AccountsController;
+    let service: AccountsService;         
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({            
             controllers: [AccountsController],
             providers: [{
                 provide: AccountsService,
-                useValue: { username: 'test', hashedPassword: 'password'}
+                useValue: { username: 'Anna', hashedPassword: 'asdas', 
+                            insertOne: jest.fn().mockResolvedValue({_id: 'mock-id', username: 'Max', password: 'mock-password'})}
             }]
         }).compile();
 
         controller = module.get<AccountsController>(AccountsController)
+        service = module.get<AccountsService>(AccountsService)
     });
 
     it('should be defined', () => {
         expect(controller).toBeDefined();
-    })
+    })    
 
-    describe('/POST createAccount', () => {
-        it('should return status code 200 ', async () => {
-            const res = await fetch('http://localhost:3000/accounts')
-            expect(res.status).toBe(200)
-        })
-    })
+    describe('createAccount', () => {        
+
+        it('should create a new account', () => {
+            const createAccountDto: CreateAccountDTO = {
+                username: 'Max',
+                password: 'mock-password'
+            }    
+            expect(controller.createAccount(createAccountDto)).resolves.toEqual({_id: 'mock-id', username: 'Max', password: 'mock-password'})
+        })        
+    })   
 
 })
+

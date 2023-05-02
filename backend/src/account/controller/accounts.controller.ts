@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Patch, Req, Res, Body, Next, Param} from '@nestjs/common'
+import {Controller, Get, Post, Patch, Req, Res, Body, Next, Param, Delete} from '@nestjs/common'
 import { AccountsService } from '../service/accounts.service';
 import { CreateAccountDTO } from '../dto/createAccountDTO';
 import { updateAccountGameDto } from '../dto/updateAccountGameDTO';
@@ -18,7 +18,7 @@ export class AccountsController {
       return this.accountsService.updateUserGamesAdd(game, id)
    } 
 
-    @Patch('/deleteGame/:id')   
+    @Delete('/deleteGame/:id')   
    async updateAccountDeleteGame(@Param('id') id: string, @Body() game: updateAccountGameDto){
       return this.accountsService.updateUserGamesDelete(game, id)
    } 
