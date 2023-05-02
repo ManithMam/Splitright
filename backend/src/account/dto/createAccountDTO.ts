@@ -1,6 +1,9 @@
+import { IsNotEmpty } from "class-validator"
 
-export interface CreateAccountDTO {
-    username: string,
-    password: string,
-    games?: [string]
+export class CreateAccountDTO {
+    @IsNotEmpty()
+    username: string
+
+    @IsNotEmpty()
+    password: string
 }

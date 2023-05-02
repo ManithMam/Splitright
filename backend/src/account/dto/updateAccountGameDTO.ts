@@ -1,3 +1,6 @@
-export interface updateAccountGameDto{
-    game: string
+import { IsNotEmpty } from "class-validator"
+
+export class updateAccountGameDto{
+    @IsNotEmpty()
+    gameId: string
 }
