@@ -12,7 +12,7 @@ export class AccountsService {
 
     async findAccount(accountToFind: loginDto): Promise<Account>{
         const account = await this.accountModel.findOne(accountToFind).exec()        
-         return account
+        return account
     }
 
     async insertOne(account: CreateAccountDTO): Promise<Account>{        
@@ -24,7 +24,7 @@ export class AccountsService {
     }
 
     async deleteAccount(accountId: string) {
-        const accountToDelete = await this.accountModel.findOneAndDelete()
+        const accountToDelete = await this.accountModel.findOneAndDelete({_id: accountId})
         if(!accountToDelete){
             throw new NotFoundException('Game with ' + accountId + ' could not be found.') 
         }
@@ -42,6 +42,6 @@ export class AccountsService {
         const account = await this.accountModel.findOneAndUpdate({_id: accountId}, 
             {$pull: {games: gameId}}, {new: true})
         
-            return account
+        return account
     }    
 }

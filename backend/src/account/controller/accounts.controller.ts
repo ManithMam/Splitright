@@ -11,4 +11,9 @@ export class AccountsController {
    async createAccount(@Body() account: CreateAccountDTO){          
       return this.accountsService.insertOne(account)           
    }    
+
+   @Delete(':id')   
+   async deleteAccount(@Param('id') accountId: string){
+      return this.accountsService.deleteAccount(accountId)
+   }
 }
