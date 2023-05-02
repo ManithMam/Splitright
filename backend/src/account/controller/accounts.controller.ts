@@ -1,7 +1,6 @@
 import {Controller, Get, Post, Patch, Req, Res, Body, Next, Param, Delete} from '@nestjs/common'
 import { AccountsService } from '../service/accounts.service';
 import { CreateAccountDTO } from '../dto/createAccountDTO';
-import { updateAccountGameDto } from '../dto/updateAccountGameDTO';
 
 
 @Controller('accounts')
@@ -12,14 +11,4 @@ export class AccountsController {
    async createAccount(@Body() account: CreateAccountDTO){          
       return this.accountsService.insertOne(account)           
    }    
-
-    @Patch('/addGame/:id')   
-   async updateAccountAddGame(@Param('id') id: string, @Body() game: updateAccountGameDto){
-      return this.accountsService.updateUserGamesAdd(game, id)
-   } 
-
-    @Delete('/deleteGame/:id')   
-   async updateAccountDeleteGame(@Param('id') id: string, @Body() game: updateAccountGameDto){
-      return this.accountsService.updateUserGamesDelete(game, id)
-   } 
 }

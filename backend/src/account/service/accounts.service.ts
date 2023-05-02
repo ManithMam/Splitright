@@ -31,15 +31,15 @@ export class AccountsService {
         return 'Account with id ' + accountId + ' was deleted.'
     }
 
-    async updateAccountGamesAdd(gameId: string, id: string): Promise<Account>{           
-        const account = await this.accountModel.findOneAndUpdate({_id: id}, 
+    async updateAccountGamesAdd(gameId: string, accountId: string): Promise<Account>{           
+        const account = await this.accountModel.findOneAndUpdate({_id: accountId}, 
             {$push: {games: gameId}}, {new: true})
 
         return account
     }
 
-    async updateAccountGamesDelete(gameId: string, id: string): Promise<Account>{
-        const account = await this.accountModel.findOneAndUpdate({_id: id}, 
+    async updateAccountGamesDelete(gameId: string, accountId: string): Promise<Account>{
+        const account = await this.accountModel.findOneAndUpdate({_id: accountId}, 
             {$pull: {games: gameId}}, {new: true})
         
             return account
