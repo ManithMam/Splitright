@@ -6,12 +6,6 @@ import mongoose, { Model, ObjectId } from "mongoose";
 import { CreateAccountDTO } from "../dto/createAccountDTO";
 
 
-const accountMockModel = {     
-    username: 'Max',
-    password: 'password123',
-    games: []
-}
-
 const mockCreateAccountDTO: CreateAccountDTO = {
     username: 'Max',
     password: 'savePassword333'
@@ -20,17 +14,15 @@ const mockCreateAccountDTO: CreateAccountDTO = {
 
 describe('AccountsService', () => {
     let service: AccountsService;
-    let model: Model<AccountDocument>    
-    
+    let model: Model<AccountDocument>        
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [ AccountsService, {
                 provide: getModelToken('Account'),
-                useValue: { Account, 
-                    create: jest.fn().mockResolvedValue(mockCreateAccountDTO), 
-                    findById: jest.fn().mockResolvedValue(accountMockModel),
-                    save: jest.fn()}
+                useValue: { 
+                    create: jest.fn().mockResolvedValue(mockCreateAccountDTO)
+                }
             }]
         }).compile();
 

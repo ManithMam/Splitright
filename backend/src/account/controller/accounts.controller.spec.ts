@@ -3,7 +3,6 @@ import { AccountsController } from "./accounts.controller";
 import { AccountsService } from "../service/accounts.service";
 import { CreateAccountDTO } from "../dto/createAccountDTO";
 
-
 describe('AccountsController', () => {
     let controller: AccountsController;
     let service: AccountsService;         
@@ -13,7 +12,7 @@ describe('AccountsController', () => {
             controllers: [AccountsController],
             providers: [{
                 provide: AccountsService,
-                useValue: { username: 'Anna', hashedPassword: 'asdas', 
+                useValue: {
                             insertOne: jest.fn().mockResolvedValue({_id: 'mock-id', username: 'Max', password: 'mock-password'})}
             }]
         }).compile();

@@ -15,8 +15,7 @@ const loginData: loginDto = {
 }
 
 describe('AuthController', () => {
-    let authController: AuthController
-    let authService: AuthService
+    let authController: AuthController    
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
