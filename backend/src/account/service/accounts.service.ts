@@ -31,6 +31,13 @@ export class AccountsService {
         return 'Account with id ' + accountId + ' was deleted.'
     }
 
+    async updateAccountName(accountId: string, newName: string): Promise<Account>{        
+        const name: string = newName
+        const account = await this.accountModel.findOneAndUpdate({_id: accountId}, {username: name}, {new: true})
+
+        return account
+    }
+
     async updateAccountGamesAdd(gameId: string, accountId: string): Promise<Account>{           
         const account = await this.accountModel.findOneAndUpdate({_id: accountId}, 
             {$push: {games: gameId}}, {new: true})

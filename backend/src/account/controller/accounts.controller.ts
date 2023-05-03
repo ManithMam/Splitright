@@ -1,4 +1,4 @@
-import {Controller, Post, Body, Param, Delete} from '@nestjs/common'
+import {Controller, Post, Body, Param, Delete, Patch, Request} from '@nestjs/common'
 import { AccountsService } from '../service/accounts.service';
 import { CreateAccountDTO } from '../dto/createAccountDTO';
 
@@ -15,5 +15,10 @@ export class AccountsController {
    @Delete(':id')   
    async deleteAccount(@Param('id') accountId: string){
       return this.accountsService.deleteAccount(accountId)
+   }
+
+   @Patch(':id')
+   async renameAccount(@Param('id') accountId: string, @Request() req){     
+      return this.accountsService.updateAccountName(accountId, req.body.newName)
    }
 }
