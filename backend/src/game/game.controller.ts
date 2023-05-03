@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/createGame.dto';
 import { UpdateGameDto } from './dto/updateGame.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('games')
 @Controller('games')
 export class GameController {
 

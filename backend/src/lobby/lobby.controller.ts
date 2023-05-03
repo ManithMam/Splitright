@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, HttpCode } from '@nestjs/common';
 import { LobbyService } from './lobby.service';
 import { LobbyDto } from './dto/lobby.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-
-@Controller('lobby')
+@ApiTags('lobbies')
+@Controller('lobbies')
 export class LobbyController {
   constructor(private readonly lobbyService: LobbyService) {}
 
