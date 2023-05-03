@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AccountsController } from "./accounts.controller";
 import { AccountsService } from "../service/accounts.service";
-import { CreateAccountDTO } from "../dto/createAccountDTO";
+import { CreateAccountDTO } from "../dto/accountDTO";
 
 describe('AccountsController', () => {
     let controller: AccountsController;

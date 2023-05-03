@@ -1,25 +1,41 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Account } from '../schema/account.schema';
-import { CreateAccountDTO } from '../dto/createAccountDTO';
-
-import { loginDto } from '../dto/loginDTO';
+import { Account, AccountDocument } from '../schema/account.schema';
+import { AccountDto } from '../dto/accountDTO';
+import { returnAccountDto } from '../dto/returnAccountDTO';
 
 @Injectable()
 export class AccountsService {
-    constructor(@InjectModel(Account.name) private accountModel: Model<Account>) {}   
+    constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
-    async findAccount(accountToFind: loginDto): Promise<Account>{
+    async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<returnAccountDto> {
         const account = await this.accountModel.findOne(accountToFind).exec()        
-        return account
+        return {      
+            id: account.id,
+            username: account.username,
+            password: account.password,
+            avatar: account.avatar
+        }
+    }    
+
+    async getAccountById(accountId: string): Promise<returnAccountDto> {
+        const account = await this.accountModel.findById(accountId).exec()
+        return {
+            id: account.id,
+            username: account.username,
+            password: account.password,
+            avatar: account.avatar
+        }
     }
 
-    async insertOne(account: CreateAccountDTO): Promise<Account>{        
+    async insertOne(account: AccountDto): Promise<returnAccountDto>{        
         const newAccount = await this.accountModel.create(account)        
         return {
+            id: newAccount.id,
             username: newAccount.username,
-            password: newAccount.password            
+            password: newAccount.password,
+            avatar: newAccount.avatar      
         }   
     }
 

@@ -3,7 +3,7 @@ import { AccountsService } from "../service/accounts.service";
 import { getModelToken } from "@nestjs/mongoose";
 import { Account, AccountDocument } from "../schema/account.schema";
 import { Model } from "mongoose";
-import { CreateAccountDTO } from "../dto/createAccountDTO";
+import { CreateAccountDTO } from "../dto/accountDTO";
 
 
 const mockCreateAccountDTO: CreateAccountDTO = {
