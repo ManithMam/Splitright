@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AccountsService } from "../service/accounts.service";
-import { Schema, getModelToken } from "@nestjs/mongoose";
+import { getModelToken } from "@nestjs/mongoose";
 import { Account, AccountDocument } from "../schema/account.schema";
-import mongoose, { Model, ObjectId } from "mongoose";
+import { Model } from "mongoose";
 import { CreateAccountDTO } from "../dto/createAccountDTO";
 
 
