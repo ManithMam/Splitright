@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GameModule } from './game/game.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AccountsModule } from './account/account.module';
+import { AuthModule } from './account/auth/auth.module';
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [
-    GameModule,
-    MongooseModule.forRoot('mongodb://localhost:8098/mydb'),
-  ],
+  imports: [MongooseModule.forRoot('mongodb://127.0.0.1:27017'), AccountsModule, AuthModule, GameModule],
+
   controllers: [AppController],
   providers: [AppService],
 })
