@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
 import { AccountsService } from "../service/accounts.service";
-import { loginDto } from "../dto/loginDTO";
+import { AccountDto } from "../dto/accountDTO";
 
-const mockAccountLoginData: loginDto = {
+const mockAccountLoginData: AccountDto = {
     username: 'Max',
     password: 'mock-password'
 }
@@ -15,7 +15,7 @@ describe('AuthService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [ AuthService, {
                 provide: AccountsService,
-                useValue: {findAccount: jest.fn().mockResolvedValue(mockAccountLoginData)}
+                useValue: {getAccountByUsernameAndPassword: jest.fn().mockResolvedValue(mockAccountLoginData)}
             }]
         })
         .compile();

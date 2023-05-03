@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
-import { loginDto } from "../dto/loginDTO";
+import { AccountDto } from "../dto/accountDTO";
 
 const mockAccount = {
     id: 'mock-id',
@@ -9,7 +9,7 @@ const mockAccount = {
     password: 'mock-password'
 }
 
-const loginData: loginDto = {
+const loginData: AccountDto = {
     username: 'Max',
     password: 'mock-password'
 }

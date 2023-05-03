@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AccountsController } from "./accounts.controller";
 import { AccountsService } from "../service/accounts.service";
-import { CreateAccountDTO } from "../dto/accountDTO";
+import { AccountDto } from "../dto/accountDTO";
 
 describe('AccountsController', () => {
     let controller: AccountsController;
@@ -28,7 +28,7 @@ describe('AccountsController', () => {
     describe('createAccount', () => {        
 
         it('should create a new account', () => {
-            const createAccountDto: CreateAccountDTO = {
+            const createAccountDto: AccountDto = {
                 username: 'Max',
                 password: 'mock-password'
             }    
