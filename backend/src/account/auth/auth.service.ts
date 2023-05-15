@@ -16,7 +16,7 @@ export class AuthService {
         if(account?.password !== accountToFind.password){
             throw new UnauthorizedException()
         }        
-        //TODO: return JWT Token instead of account
+       
         return account;        
     }
 

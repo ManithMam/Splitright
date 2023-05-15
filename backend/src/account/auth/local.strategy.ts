@@ -6,7 +6,6 @@ import { Account } from '../schema/account.schema';
 import { AccountDto } from '../dto/accountDTO';
 
 
-
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(

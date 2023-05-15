@@ -28,7 +28,7 @@ describe('AuthService', () => {
 
     describe('login', () => {       
         it('should return existing account', async () => {
-            const existingAccount = authService.login(mockAccountLoginData)
+            const existingAccount = authService.validateAccount(mockAccountLoginData)
             expect(existingAccount).toBeDefined()
         })
     })
