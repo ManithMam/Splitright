@@ -20,8 +20,8 @@ export class AuthService {
         return account;        
     }
 
-    async login(account: HydratedDocument<Account>) {
-        const payload = { username: account.username, sub: account._id}
+    async login(account: Account) {     
+        const payload = { username: account.username, sub: account.password}
         return{
             access_token: this.jwtService.sign(payload)
         }

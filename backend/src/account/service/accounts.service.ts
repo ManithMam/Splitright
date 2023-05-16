@@ -10,32 +10,37 @@ export class AccountsService {
     constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
     async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<returnAccountDto> {
-        const account = await this.accountModel.findOne(accountToFind).exec()        
+        const account = await this.accountModel.findOne(accountToFind).exec()
+        
+        if(!account){
+            throw new Error('Account does not exist. Wrong username or password.')
+        }
+        
         return {      
-            id: account.id,
             username: account.username,
             password: account.password,
+            games: account.games,
             avatar: account.avatar
         }
     }    
 
     async getAccountById(accountId: string): Promise<returnAccountDto> {
         const account = await this.accountModel.findById(accountId).exec()
-        return {
-            id: account.id,
+        return {            
             username: account.username,
             password: account.password,
+            games: account.games,
             avatar: account.avatar
         }
     }
 
     async insertOne(account: AccountDto): Promise<returnAccountDto>{        
         const newAccount = await this.accountModel.create(account)        
-        return {
-            id: newAccount.id,
+        return {            
             username: newAccount.username,
             password: newAccount.password,
-            avatar: newAccount.avatar      
+            games: newAccount.games,
+            avatar: newAccount.avatar    
         }   
     }
 
