@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account, AccountDocument } from '../schema/account.schema';
@@ -10,17 +10,18 @@ export class AccountsService {
     constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
     async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<returnAccountDto> {
-        const account = await this.accountModel.findOne(accountToFind).exec()
-        
-        if(!account){
-            throw new Error('Account does not exist. Wrong username or password.')
+        try{
+            const account = await this.accountModel.findOne(accountToFind).exec()
+
+            return {      
+                username: account.username,
+                password: account.password,
+                games: account.games,
+                avatar: account.avatar
+            }
         }
-        
-        return {      
-            username: account.username,
-            password: account.password,
-            games: account.games,
-            avatar: account.avatar
+        catch(err){
+            throw new NotFoundException('Account not found. Wrong username or password.')
         }
     }    
 
@@ -35,13 +36,18 @@ export class AccountsService {
     }
 
     async insertOne(account: AccountDto): Promise<returnAccountDto>{        
-        const newAccount = await this.accountModel.create(account)        
-        return {            
-            username: newAccount.username,
-            password: newAccount.password,
-            games: newAccount.games,
-            avatar: newAccount.avatar    
-        }   
+        try{
+            const newAccount = await this.accountModel.create(account)        
+            return {            
+                username: newAccount.username,
+                password: newAccount.password,
+                games: newAccount.games,
+                avatar: newAccount.avatar    
+            }   
+        }
+        catch(err){
+            throw new ConflictException('Account already exists. Use different password.')
+        }       
     }
 
     async deleteAccount(accountId: string) {
