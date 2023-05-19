@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AccountsService } from '../service/accounts.service';
-import { AccountDto } from '../dto/accountDTO';
-import { Account } from '../schema/account.schema';
+import { AccountsService } from '../account/service/accounts.service';
+import { AccountDto } from '../account/dto/accountDTO';
+import { Account } from '../account/schema/account.schema';
 import { JwtService } from '@nestjs/jwt';
 import { HydratedDocument } from 'mongoose';
 
@@ -15,7 +15,7 @@ export class AuthService {
         const account = await this.accountsService.getAccountByUsernameAndPassword(accountToFind)
         if(account?.password !== accountToFind.password){
             throw new UnauthorizedException()
-        }        
+        }       
        
         return account;        
     }
