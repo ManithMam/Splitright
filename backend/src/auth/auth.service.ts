@@ -3,7 +3,6 @@ import { AccountsService } from '../account/service/accounts.service';
 import { AccountDto } from '../account/dto/accountDTO';
 import { Account } from '../account/schema/account.schema';
 import { JwtService } from '@nestjs/jwt';
-import { HydratedDocument } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +19,7 @@ export class AuthService {
         return account;        
     }
 
-    async login(account: Account) {     
+    async login(account: AccountDto) {     
         const payload = { username: account.username, sub: account.password}
         return{
             access_token: this.jwtService.sign(payload)

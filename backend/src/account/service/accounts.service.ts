@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Account, AccountDocument } from '../schema/account.schema';
 import { AccountDto } from '../dto/accountDTO';
 import { returnAccountDto } from '../dto/returnAccountDTO';
+import { returnAccountDtoNoPassword } from '../dto/returnAccountDTONoPassword';
 
 @Injectable()
 export class AccountsService {
@@ -25,28 +26,26 @@ export class AccountsService {
         }
     }    
 
-    async getAccountById(accountId: string): Promise<returnAccountDto> {
+    async getAccountById(accountId: string): Promise<returnAccountDtoNoPassword> {
         const account = await this.accountModel.findById(accountId).exec()
         return {            
             username: account.username,
-            password: account.password,
             games: account.games,
             avatar: account.avatar
         }
     }
 
-    async insertOne(account: AccountDto): Promise<returnAccountDto>{        
+    async insertOne(account: AccountDto): Promise<returnAccountDtoNoPassword>{        
         try{
             const newAccount = await this.accountModel.create(account)        
             return {            
-                username: newAccount.username,
-                password: newAccount.password,
+                username: newAccount.username,                
                 games: newAccount.games,
                 avatar: newAccount.avatar    
             }   
         }
         catch(err){
-            throw new ConflictException('Account already exists. Use different password.')
+            throw new ConflictException('Account with that password already exists. Use different password.')
         }       
     }
 
