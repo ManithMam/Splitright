@@ -1,20 +1,19 @@
-import { IsNotEmpty } from "class-validator"
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator"
 import mongoose from "mongoose";
 
 export class returnAccountDto{   
-
-    @ApiProperty()
+    
     @IsNotEmpty()
+    @IsString()
     username: string
-
-    @ApiProperty()
+    
     @IsNotEmpty()
+    @IsString()
     password: string
 
     games: [mongoose.Types.ObjectId]
 
-    @ApiProperty()
+    @IsString()
     avatar: string
 
 }
