@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
-import { AccountDto } from "../dto/accountDTO";
+import { AccountDto } from "../account/dto/accountDTO";
 
 const mockAccount = {
     id: 'mock-id',

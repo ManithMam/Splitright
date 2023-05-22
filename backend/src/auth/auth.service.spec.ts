@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
-import { AccountsService } from "../service/accounts.service";
-import { AccountDto } from "../dto/accountDTO";
+import { AccountsService } from "../account/service/accounts.service";
+import { AccountDto } from "../account/dto/accountDTO";
 
 const mockAccountLoginData: AccountDto = {
     username: 'Max',
@@ -28,7 +28,7 @@ describe('AuthService', () => {
 
     describe('login', () => {       
         it('should return existing account', async () => {
-            const existingAccount = authService.login(mockAccountLoginData)
+            const existingAccount = authService.validateAccount(mockAccountLoginData)
             expect(existingAccount).toBeDefined()
         })
     })

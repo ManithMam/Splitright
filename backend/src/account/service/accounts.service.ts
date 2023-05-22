@@ -1,42 +1,52 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account, AccountDocument } from '../schema/account.schema';
 import { AccountDto } from '../dto/accountDTO';
 import { returnAccountDto } from '../dto/returnAccountDTO';
+import { returnAccountDtoNoPassword } from '../dto/returnAccountDTONoPassword';
 
 @Injectable()
 export class AccountsService {
     constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
     async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<returnAccountDto> {
-        const account = await this.accountModel.findOne(accountToFind).exec()        
-        return {      
-            id: account.id,
-            username: account.username,
-            password: account.password,
-            avatar: account.avatar
+        try{
+            const account = await this.accountModel.findOne(accountToFind).exec()
+
+            return {      
+                username: account.username,
+                password: account.password,
+                games: account.games,
+                avatar: account.avatar
+            }
+        }
+        catch(err){
+            throw new NotFoundException('Account not found. Wrong username or password.')
         }
     }    
 
-    async getAccountById(accountId: string): Promise<returnAccountDto> {
+    async getAccountById(accountId: string): Promise<returnAccountDtoNoPassword> {
         const account = await this.accountModel.findById(accountId).exec()
-        return {
-            id: account.id,
+        return {            
             username: account.username,
-            password: account.password,
+            games: account.games,
             avatar: account.avatar
         }
     }
 
-    async insertOne(account: AccountDto): Promise<returnAccountDto>{        
-        const newAccount = await this.accountModel.create(account)        
-        return {
-            id: newAccount.id,
-            username: newAccount.username,
-            password: newAccount.password,
-            avatar: newAccount.avatar      
-        }   
+    async insertOne(account: AccountDto): Promise<returnAccountDtoNoPassword>{        
+        try{
+            const newAccount = await this.accountModel.create(account)        
+            return {            
+                username: newAccount.username,                
+                games: newAccount.games,
+                avatar: newAccount.avatar    
+            }   
+        }
+        catch(err){
+            throw new ConflictException('Account with that password already exists. Use different password.')
+        }       
     }
 
     async deleteAccount(accountId: string) {

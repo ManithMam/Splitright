@@ -1,15 +1,12 @@
 import { IsNotEmpty, IsString } from "class-validator"
 import mongoose from "mongoose";
 
-export class returnAccountDto{   
+export class returnAccountDtoNoPassword{   
+
     
     @IsNotEmpty()
     @IsString()
-    username: string
-    
-    @IsNotEmpty()
-    @IsString()
-    password: string
+    username: string   
 
     games: [mongoose.Types.ObjectId]
 
