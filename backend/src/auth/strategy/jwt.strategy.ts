@@ -19,8 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     async validate(payload: any): Promise<returnAccountDtoNoPassword>{                    
         const accountDto: AccountDto = {username: payload.username, password: payload.sub}
         const games: [mongoose.Types.ObjectId] = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).games        
-        const avatar: string = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).avatar               
-        return { username: payload.username, games: games, avatar: avatar }
+        const avatar: string = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).avatar       
+        const id: string = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).id
+        return { username: payload.username, games: games, avatar: avatar, id: id}
     }
 
 }

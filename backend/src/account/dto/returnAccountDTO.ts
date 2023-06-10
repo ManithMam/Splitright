@@ -16,4 +16,8 @@ export class returnAccountDto{
     @IsString()
     avatar: string    
 
+    @IsString()
+    @IsNotEmpty()
+    id: string
+
 }
