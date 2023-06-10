@@ -14,6 +14,6 @@ export class returnAccountDto{
     games: [mongoose.Types.ObjectId]
 
     @IsString()
-    avatar: string
+    avatar: string    
 
 }

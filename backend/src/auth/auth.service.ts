@@ -3,6 +3,7 @@ import { AccountsService } from '../account/service/accounts.service';
 import { AccountDto } from '../account/dto/accountDTO';
 import { Account } from '../account/schema/account.schema';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -12,9 +13,12 @@ export class AuthService {
 
     async validateAccount(accountToFind: AccountDto): Promise<Account> {
         const account = await this.accountsService.getAccountByUsernameAndPassword(accountToFind)
-        if(account?.password !== accountToFind.password){
+       
+        const isSamePassword = bcrypt.compare(accountToFind.password, account.password)
+
+        if(!isSamePassword){
             throw new UnauthorizedException()
-        }       
+        }         
        
         return account;        
     }
