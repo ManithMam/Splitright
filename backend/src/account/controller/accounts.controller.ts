@@ -6,12 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('accounts')
 @Controller('accounts')
 export class AccountsController {
-    constructor(private accountsService: AccountsService) {}   
-
-   @Post()
-   async createAccount(@Body() account: AccountDto){          
-      return this.accountsService.insertOne(account)           
-   }    
+    constructor(private accountsService: AccountsService) {}      
 
    @Delete(':id')   
    async deleteAccount(@Param('id') accountId: string){

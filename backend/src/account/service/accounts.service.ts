@@ -5,20 +5,23 @@ import { Account, AccountDocument } from '../schema/account.schema';
 import { AccountDto } from '../dto/accountDTO';
 import { returnAccountDto } from '../dto/returnAccountDTO';
 import { returnAccountDtoNoPassword } from '../dto/returnAccountDTONoPassword';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AccountsService {
     constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
     async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<returnAccountDto> {
-        try{
-            const account = await this.accountModel.findOne(accountToFind).exec()
+        try{           
+
+            const account = await this.accountModel.findOne({username: accountToFind.username}).exec()
 
             return {      
                 username: account.username,
                 password: account.password,
                 games: account.games,
                 avatar: account.avatar
+              
             }
         }
         catch(err){
