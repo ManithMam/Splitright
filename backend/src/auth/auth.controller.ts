@@ -13,13 +13,7 @@ export class AuthController {
     @Post('/login')
     login(@Body() account){
         return this.authService.login(account)
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('/account')
-    getAccount(@Request() req) {
-        return req.user
-    }
+    }    
 
     @Post('/register')
     async createAccount(@Body() account: AccountDto){          

@@ -20,8 +20,8 @@ export class AccountsService {
                 username: account.username,
                 password: account.password,
                 games: account.games,
-                avatar: account.avatar
-              
+                avatar: account.avatar,
+                id: account.id              
             }
         }
         catch(err){
@@ -29,14 +29,14 @@ export class AccountsService {
         }
     }    
 
-    async getAccountById(accountId: string): Promise<returnAccountDtoNoPassword> {
+    /* async getAccountById(accountId: string): Promise<returnAccountDtoNoPassword> {
         const account = await this.accountModel.findById(accountId).exec()
         return {            
             username: account.username,
             games: account.games,
             avatar: account.avatar
         }
-    }
+    } */
 
     async insertOne(account: AccountDto): Promise<returnAccountDtoNoPassword>{        
         try{
@@ -44,7 +44,8 @@ export class AccountsService {
             return {            
                 username: newAccount.username,                
                 games: newAccount.games,
-                avatar: newAccount.avatar    
+                avatar: newAccount.avatar,
+                id: newAccount.id
             }   
         }
         catch(err){
