@@ -5,9 +5,31 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(180deg, #305B95 0%, #4AAEF0 100%);
+  width: 100%;
+  height: 100%;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.App {
+  text-align: center;
+}
+
+:root {
+  --primary-color-light: #ECFFFF;
+  --primary-color-main: #4AAEF0;
+  --primary-color-dark: #18374D;
+  --secondary-color-light: #E6D1FB;
+  --secondary-color-main: #B474F4;
+  --secondary-color-dark: #59288A;
+  --error-color-light: #FBD1D2;
+  --error-color-main: #F47477;
+  --error-color-dark: #F0464A;
+  --success-color-light: #D5F7DE;
+  --success-color-main: #57DE7A;
+  --success-color-dark: #3C9955;
 }
