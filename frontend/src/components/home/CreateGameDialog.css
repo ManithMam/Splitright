@@ -1,0 +1,62 @@
+.Dialog {
+    min-width: 200px;
+    max-width: 600px;
+    padding: 20px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.Dialog-Item {
+    width: 100%;
+}
+
+.TopItem {
+    margin-top: 50px;
+}
+
+.ButtonGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+}
+.Button {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+}
+
+.Toggle-Btn-Info-Group {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    color: gray;
+}
+
+.Toggle-Btn-Info {
+    width: 100%;
+}
+
+.ToggleBtnGroup {
+    width: 100%;
+}
+
+.ToggleBtn {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.Btn {
+    width: 100%;
+}
+
+.DialogContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 10px !important;
+}
+
