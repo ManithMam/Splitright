@@ -1,6 +1,6 @@
 import { Result } from "../result/result.model";
 
-export class GetGameDto {
+export class GetGameDetailsDto {
     id: string;
 
     title: string;

@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsString, isString } from "class-validator"
+import { IsNotEmpty, IsString } from "class-validator"
 import mongoose from "mongoose";
 
-export class returnAccountDtoNoPassword{   
+export class ReturnAccountDtoNoPassword{   
 
     @IsString()
     @IsNotEmpty()
