@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LobbyController } from './lobby.controller';
 import { LobbyService } from './lobby.service';
-import { Lobby, LobbySchema } from './schemas/lobby.schema';
+import { Lobby, LobbySchema } from './lobby.schema';
 
 @Module({
   imports: [
@@ -10,5 +10,6 @@ import { Lobby, LobbySchema } from './schemas/lobby.schema';
   ],
   controllers: [LobbyController],
   providers: [LobbyService],
+  exports: [LobbyService]
 })
 export class LobbyModule {}

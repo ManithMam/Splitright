@@ -14,14 +14,10 @@ export class Game {
   @Prop({ type: String, enum: SplitMethod, required: true })
   splitMethod: SplitMethod;
 
-  @Prop()
-  code: string;
-
   @Prop({ required: true })
   amount: number;
 
-  @Prop()
-  //TODO: ({ required: true })
+  @Prop({ required: true })
   admin: mongoose.Types.ObjectId;
 
   @Prop()

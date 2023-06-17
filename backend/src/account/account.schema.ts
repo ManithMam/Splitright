@@ -7,17 +7,17 @@ export type AccountDocument = HydratedDocument<Account & Document>
 @Schema()
 export class Account{   
 
-    @Prop({required: true})
+    @Prop({required: true, unique: true})
     username: string;
 
-    @Prop({required: true, unique: true})
+    @Prop({required: true})
     password: string;
 
     @Prop()
     games?: [mongoose.Types.ObjectId]
 
-    @Prop()
-    avatar?: string  
+    @Prop({default: "avatar1"})
+    avatar?: string
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

@@ -1,14 +1,13 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { AccountsService } from '../../account/service/accounts.service';
-import { returnAccountDtoNoPassword } from '../../account/dto/returnAccountDTONoPassword';
+import { AccountService } from 'src/account/accounts.service';
+import { ReturnAccountDtoNoPassword } from '../../account/dto/returnAccountDTONoPassword';
 import { AccountDto } from '../../account/dto/accountDTO';
-import mongoose from 'mongoose';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private accountsService: AccountsService) {
+    constructor(private accountService: AccountService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -16,12 +15,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })        
     }
 
-    async validate(payload: any): Promise<returnAccountDtoNoPassword>{                    
+    async validate(payload: any): Promise<ReturnAccountDtoNoPassword>{                    
         const accountDto: AccountDto = {username: payload.username, password: payload.sub}
-        const games: [mongoose.Types.ObjectId] = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).games        
-        const avatar: string = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).avatar       
-        const id: string = (await this.accountsService.getAccountByUsernameAndPassword(accountDto)).id
-        return { username: payload.username, games: games, avatar: avatar, id: id}
+        const user: ReturnAccountDtoNoPassword = await this.accountService.getAccountByUsernameAndPassword(accountDto)
+
+        return user;;
     }
 
 }
