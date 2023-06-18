@@ -1,0 +1,17 @@
+FROM node:latest
+
+WORKDIR /app/backend
+
+COPY package*.json /.
+
+RUN npm install
+
+COPY . .
+
+ENV JWT_SECRET=SECRET MONGO_URI_DOCKER=mongodb://mongodb:27017
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD [ "node", "dist/main.js" ]

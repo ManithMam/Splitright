@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017   
+    networks:
+      - spliright-network 
+    volumes:
+      - /data/db  
+
+  backend:
+    build:
+      context: backend
+      dockerfile: dockerfile
+    ports: 
+      - 3000:3000
+    environment:
+      - JWT_SECRET=SECRET
+      - MONGO_URI_DOCKER=mongodb://mongodb:27017
+    networks:
+      - spliright-network 
+    depends_on:
+      - mongodb
+    healthcheck:
+      test: curl --fail http://mongodb:27017 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s    
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - spliright-network 
+    depends_on:
+      - backend
+    healthcheck:
+      test: curl --fail http://backend:3000/health
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s   
+
+networks:
+  spliright-network:
+      
+    
