@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AccountsModule } from 'src/account/account.module';
 import { GameModule } from 'src/game/game.module';
-import { PopulateDbService } from './populatedb.service';
+import { PopulateDbService } from 'src/populateDb/populateDb.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Game, GameSchema } from 'src/game/game.schema';
 import { Account, AccountSchema } from 'src/account/account.schema';
