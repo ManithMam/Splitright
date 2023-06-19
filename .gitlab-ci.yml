@@ -1,0 +1,40 @@
+stages:          
+  - build
+  - test
+  - deploy
+
+build-job:      
+  stage: build
+  script:
+    - echo "Install all dependencies in backend..." 
+    - cd backend    
+    - npm install  
+    - echo "Installed all dependencies in backend." 
+    - echo "Run build frontend"    
+    - npm run build
+    - cd ..
+    - cd frontend
+    - npm install
+    - echo "Installed all dependencies in frontend" 
+    - echo "Run build frontend"    
+    - npm run build
+    - cd ..
+    - echo "Frontend and Backend build complete."
+
+unit-test-job:   
+  stage: test    
+  script:
+    - echo "To be implemented"   
+
+
+e2e-test-job:
+    stage: test
+    script:
+        - echo "To be implemented"   
+
+deploy-job:      
+  stage: deploy  
+  environment: production
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
