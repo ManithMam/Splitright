@@ -1,5 +1,5 @@
 import { Controller, Post } from '@nestjs/common';
-import { PopulateDbService } from './populatedb.service';
+import { PopulateDbService } from 'src/populateDb/populateDb.service';
 
 @Controller("populateDb")
 export class PopulateDbController {

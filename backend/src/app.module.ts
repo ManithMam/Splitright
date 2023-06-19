@@ -8,17 +8,23 @@ import { GameModule } from './game/game.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FileModule } from './file/file.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  imports: [
-    PopulateDbModule, 
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017'), 
+  imports: [    
+    MongooseModule.forRootAsync({
+    imports: [ConfigModule],
+    inject: [ConfigService],
+    useFactory: async (config: ConfigService) => ({
+      uri: config.get<string>('MONGO_URI_DOCKER')
+    })
+  }), 
     AccountsModule, 
     AuthModule, 
     GameModule, 
     PopulateDbModule,
-    ConfigModule.forRoot({ isGlobal: true }), LobbyModule, FileModule],
+    ConfigModule.forRoot({ isGlobal: true }), LobbyModule, HealthModule, FileModule],
   controllers: [AppController],
   providers: [AppService],
 })

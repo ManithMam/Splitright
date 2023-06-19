@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import {Avatar, ListItemAvatar, Typography } from '@mui/material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import './Results.css';
 
 interface Account {
   accountId: string;
@@ -19,6 +25,8 @@ interface GetGameInfo {
   host: string;
   results: Result[];
 }
+
+const mockAvatarUrl: string = "https://d2qp0siotla746.cloudfront.net/img/use-cases/profile-picture/template_0.jpg"
 
 const GameResults: React.FC = () => {
   const [gameInfo, setGameInfo] = useState<GetGameInfo | null>(null);
@@ -49,7 +57,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_1",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "jennie46"
         },
         amount: 1.15
@@ -57,7 +65,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_2",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "tom123"
         },
         amount: 3.36
@@ -65,7 +73,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_3",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "lilly34"
         },
         amount: 8.09
@@ -73,7 +81,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_4",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "kat1213"
         },
         amount: 3.33
@@ -81,7 +89,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_5",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "willow11"
         },
         amount: 2.98
@@ -89,7 +97,7 @@ const GameResults: React.FC = () => {
       {
         account: {
           accountId: "accountId_6",
-          avatarUrl: "https://i.pravatar.cc/30",
+          avatarUrl: mockAvatarUrl,
           username: "jeramie234"
         },
         amount: 1.09
@@ -103,17 +111,49 @@ const GameResults: React.FC = () => {
 
   return (
     <div>
-      <h1>{gameInfo.title}</h1>
-      <p>Game Mode: {gameInfo.mode}</p>
-      <p>Amount: {gameInfo.amount}</p>
-      <p>Host: {gameInfo.host}</p>
-      <ul>
+      <Box className='Box' sx={{bgcolor:'secondary.light'}}>
+      <Typography variant="h5" gutterBottom sx={{bgcolor:'secondary.dark', color:'secondary.light', borderRadius: '26px'}}>
+        {gameInfo.title}
+      </Typography>
+      <List style={{display: 'flex', justifyContent: 'space-around'}}>
+      <ListItem style={{ flexDirection: 'column' }}>
+        <ListItemText primary="Mode:"
+        sx={{ marginBottom: '1px' }}
+        />
+        <ListItemText primary={gameInfo.mode}/>
+        </ListItem>
+        <ListItem style={{ flexDirection: 'column' }}>
+          <ListItemText primary="Amount:"
+          sx={{ marginBottom: '1px' }}
+          />
+        <ListItemText primary={gameInfo.amount}/>
+        </ListItem>
+        <ListItem style={{ flexDirection: 'column' }}>
+        <ListItemText primary="Host:"
+        sx={{ marginBottom: '1px' }}
+        />
+        <ListItemText primary={gameInfo.host}/>
+        </ListItem>
+      </List>
+      </Box>
+
+      <Box className='Box' sx={{bgcolor:'primary.light'}}>
+      <Typography variant="h5" gutterBottom sx={{bgcolor:'primary.dark', color:'primary.light', borderRadius: '26px'}}>
+        Results
+      </Typography>
+      <List>
       {gameInfo.results.map((result) => (
-        <li key={result.account.accountId}>
-          Account: {result.account.username}, Amount: {result.amount}
-        </li>
+        <ListItem key={result.account.accountId} style={{display: 'flex', justifyContent: 'space-around'}}>
+          <ListItemAvatar>
+            <Avatar alt={result.account.username} src={result.account.avatarUrl} />
+          </ListItemAvatar>
+          <ListItemText primary={`${result.account.username}`}/>
+          <ListItemText style={{textAlign: 'right'}}
+          primary={`${result.amount}`}/>
+        </ListItem>
       ))}
-    </ul>
+      </List>
+    </Box>
     </div>
   );
 };
