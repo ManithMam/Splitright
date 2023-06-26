@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AccountsModule } from 'src/account/account.module';
+import { AccountModule } from 'src/account/account.module';
 import { GameModule } from 'src/game/game.module';
 import { PopulateDbService } from 'src/populateDb/populateDb.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,7 +8,7 @@ import { Account, AccountSchema } from 'src/account/account.schema';
 import { PopulateDbController } from './populateDb.controller';
 
 @Module({
-    imports: [AccountsModule, GameModule,
+    imports: [AccountModule, GameModule,
         MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
         MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),],
     controllers: [PopulateDbController],

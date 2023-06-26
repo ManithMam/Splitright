@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
+
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     transform: true,
@@ -13,6 +17,8 @@ async function bootstrap() {
     }
   }));
 
+  app.useGlobalFilters(new HttpExceptionFilter());
+  
   // <--- Swagger
   const config = new DocumentBuilder()
     .setTitle('SplitRight')

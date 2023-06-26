@@ -9,7 +9,7 @@ export class FileController {
     constructor(private fileService: FileService) {}
 
     @Get(':filename')
-    @Header('Content-Type', 'image/jpeg')
+    @Header('Content-Type', 'image/png')
     getImageFromExternalApi(@Param('filename') filename: string): StreamableFile {
         return this.fileService.getFile(filename);
     }

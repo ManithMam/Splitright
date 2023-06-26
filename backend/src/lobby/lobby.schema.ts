@@ -9,10 +9,13 @@ export class Lobby {
   gameId: string;
 
   @Prop()
+  adminId: string;
+
+  @Prop()
   code: string;
 
   @Prop({ type: [{ type: String, ref: 'Account' }] })
-  guests?: string[];
+  guestIds?: string[];
 }
 
 export const LobbySchema = SchemaFactory.createForClass(Lobby);
