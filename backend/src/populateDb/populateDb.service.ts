@@ -39,7 +39,7 @@ export class PopulateDbService {
             let account: Account = {
                 username: names.at(i), 
                 password: "password",
-                avatar: "avatar" + (i+1)
+                avatar: "avatar" + (i+1) + ".png"
             }
             const newAccount = await this.accountModel.create(account);
             accountIds.push(newAccount._id.toString())
@@ -63,7 +63,7 @@ export class PopulateDbService {
             "Club entry",
             "Coffee",
 
-            "Restauerant",
+            "Restaurant",
             "Groceries",
             "Coffee",
             "Picnic",
@@ -77,16 +77,16 @@ export class PopulateDbService {
         for(let i=0; i < 15; i++) {
 
             const modeInt = Number((Math.random() * (2 - 0) + 0).toFixed(0));
-            const splitMethod = modes.at(modeInt);
+            const mode = modes.at(modeInt);
             const amount = Number((Math.random() * (100 - 5) + 5).toFixed(2));
             const selectedPlayers = this.selectPlayers(accountIds);
-            const results = await this.gameService.getResults(amount, splitMethod, selectedPlayers.allPlayers);
+            const results = await this.gameService.generateResults(amount, mode, selectedPlayers.allPlayers);
 
             let game = {
                 title: titles.at(i),
-                splitMethod: splitMethod,
+                mode: mode,
                 amount: amount,
-                admin: selectedPlayers.admin,
+                adminId: selectedPlayers.admin,
                 results: results
             }
 

@@ -1,0 +1,18 @@
+.amount {
+    text-align: end;
+}
+
+.green-text {
+    color: var(--success-color-dark);
+}
+
+.red-text {
+    color: var(--error-color-main);
+}
+
+.avatar { 
+    width: 40px;
+    height: 40px; 
+    border-radius: 50%;
+    margin-right: 10px
+}

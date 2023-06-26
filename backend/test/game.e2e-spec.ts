@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { CreateGameDto } from 'src/game/dto/createGame.dto';
 import { AppModule } from './../src/app.module';
-import { SplitMethod } from 'src/game/splitMethod.enum';
+import { SplitMethod } from 'src/game/mode.enum';
 
 describe('GameController (e2e)', () => {
   let app: INestApplication;

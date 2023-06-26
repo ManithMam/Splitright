@@ -1,39 +1,41 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, HttpCode, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, HttpCode, UseGuards, Request } from '@nestjs/common';
 import { LobbyService } from './lobby.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateLobbyDto } from './dto/updateLobby.dto';
 import { CreateLobbyDto } from './dto/createLobby.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { GetLobbyDto } from './dto/getLobby.dto';
 
 @ApiTags('lobbies')
 @Controller('lobbies')
 export class LobbyController {
   constructor(private readonly lobbyService: LobbyService) {}
 
-  // demo only
+  /**
+   * sent by the game admin after creating a game
+   * @param createLobbyDto needed infos to create a lobby
+   * @param req 
+   * @returns 
+   */
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createLobby(@Body() lobbyDto: CreateLobbyDto) {
-    return await this.lobbyService.createLobby(lobbyDto);
+  async createLobby(@Body() createLobbyDto: CreateLobbyDto, @Request() req): Promise<{lobbyId: string}> {
+    return await this.lobbyService.create(createLobbyDto, req.user.id);
   }
 
 
  /**
   * sent by all game participaints
-      - game admin sends:
-        - when already in the lobby to update their guest list version
-      - game guests send:
-        - to enter the game lobby
-        - to update their guest list version when in the lobby
-        - to get game results after the game results are initiated by the admin
+      - to get the code
+      - to update their guest list version when in the lobby
 
   * @param id the id of the lobby
   * @returns lobby/game
   */
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findeOneLobby(@Param('id') id: string) {
-    return await this.lobbyService.findLobbyById(id);
+  async findOneLobby(@Param('id') id: string, @Request() req): Promise<GetLobbyDto> {
+    return await this.lobbyService.getById(id, req.user.id);
   }
 
   /**
@@ -43,9 +45,23 @@ export class LobbyController {
    * @returns updated lobby
    */
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Patch(':id')
-  async updateLobbyGuests(@Param('id') id: string, @Body() updateLobbyDto: UpdateLobbyDto) {
-    return await this.lobbyService.updateLobbyGuests(id, updateLobbyDto);
+  async kickOutLobbyGuests(@Param('id') id: string, @Body() updateLobbyDto: UpdateLobbyDto, @Request() req) {
+    return await this.lobbyService.kickOutLobbyGuests(id, updateLobbyDto.guestUsernames, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('join/:code')
+  async joinLobby(@Param('code') code: string, @Request() req): Promise<{lobbyId: string}> {
+    return await this.lobbyService.join(req.user.id, code);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Patch('exit/:id')
+  async exitLobby(@Param('id') id: string, @Request() req) {
+    return await this.lobbyService.exit(req.user.id, id);
   }
 
   // demo only

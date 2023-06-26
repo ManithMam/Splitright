@@ -5,7 +5,7 @@ export class UpdateGameDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsArray()
-    guestAccounts: string[];
+    guestAccountUsernames: string[];
 
     @ApiProperty()
     @IsNotEmpty()

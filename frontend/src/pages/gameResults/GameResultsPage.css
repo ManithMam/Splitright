@@ -1,0 +1,42 @@
+.amount {
+    text-align: end;
+}
+
+.green-text {
+    color: var(--success-color-dark);
+}
+
+.red-text {
+    color: var(--error-color-dark);
+}
+
+.communist-box {
+   background-color: var(--error-color-light);
+}
+
+.random-box {
+    background-color: var(--secondary-color-light);
+}
+
+.lucky-box {
+    background-color: var(--success-color-light);
+}
+
+.Title {
+    border-radius: 26px
+}
+
+.communist-title {
+    color: var(--error-color-light);
+    background-color: var(--error-color-dark);
+}
+
+.random-title {
+    color: var(--secondary-color-light);
+    background-color: var(--secondary-color-dark);
+}
+
+.lucky-title {
+    color: var(--success-color-light);
+    background-color: var(--success-color-dark);
+}

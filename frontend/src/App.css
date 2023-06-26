@@ -1,7 +1,7 @@
 .App {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .Logout {
@@ -14,6 +14,47 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 30px;
+}
+
+.splitright-logo {
+    width: 200px;
+    height: auto
+}
+
+.PageContainer {
+    max-width: 700px;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.BtnGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.Btn {
+    width: 100%
+}
+
+.MainBtn {
+    color: var(--primary-color-light) !important;
+    background-color: var(--primary-color-dark) !important;
+}
+
+.MainBtn:hover {
+    color: var(--primary-color-main) !important;
+}
+
+.SecondaryBtn {
+    background-color: var(--primary-color-light)!important;
+    color: var(--primary-color-dark) !important;
+    border-color: var(--primary-color-dark) !important;
+    border-width: 1px !important;
 }
 

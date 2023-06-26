@@ -1,4 +1,4 @@
 export class Result {
-    account: string;
+    accountId: string;
     amount: number;
 }

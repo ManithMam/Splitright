@@ -1,19 +1,15 @@
-import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateGameDto } from './dto/createGame.dto';
 import { Game } from './game.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { UpdateGameDto } from './dto/updateGame.dto';
 import { Result } from './result/result.model';
-import { GetGameDetailsDto } from './dto/getGameDetails.dto';
+import { GetGameWithResults } from './dto/getGameWithResults.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { AccountService } from 'src/account/accounts.service';
-import { LobbyService } from 'src/lobby/lobby.service';
-import { CreateLobbyDto } from 'src/lobby/dto/createLobby.dto';
-import { GetLobbyDto } from 'src/lobby/dto/getLobby.dto';
 import { GetGameShortDto } from './dto/getGameShort.dto';
 import { shuffleArray } from '@utils/utils';
-
-var mongoose = require('mongoose');
+import { GetGameWithoutResults } from './dto/getGameWithoutResults.dto';
 
 @Injectable()
 export class GameService {
@@ -21,50 +17,28 @@ export class GameService {
     @Inject(AccountService)
     private readonly accountService: AccountService;
 
-    @Inject(LobbyService)
-    private readonly lobbyService: LobbyService;
-
     constructor(@InjectModel(Game.name) private gameModel: Model<Game>) {
     }
 
     private readonly logger = new Logger(GameService.name);
     
-    async create(accountId: string, createGameDto: CreateGameDto): Promise<GetLobbyDto> {
+    async create(accountId: string, createGameDto: CreateGameDto) {
         this.logger.debug("Creating a game...");
 
         let game = {
             title: createGameDto.title,
-            splitMethod: createGameDto.splitMethod,
+            mode: createGameDto.mode,
             amount: createGameDto.amount,
-            admin: accountId,
+            adminId: accountId,
         }
         const newGame = new this.gameModel(game);
         const resultGame = await newGame.save();
         this.logger.debug("Game stored")
 
-        let createLobbyDto: CreateLobbyDto = {
-            game: resultGame._id.toString(),
-        }
-        let lobby = await this.lobbyService.createLobby(createLobbyDto);
-        this.logger.debug("Lobby created")
-
-        let adminUsername = (await this.accountService.getAccountById(accountId)).username;
-
-        this.logger.log("Game \"" + newGame.title + "\" created successfully");
-        
-        let resultLobby: GetLobbyDto = {
-            lobbyId: lobby.id.toString(),
-            gameTitle: resultGame.title, 
-            code: lobby.code,
-            gameMode: game.splitMethod,
-            gameAmount: game.amount, 
-            gameAdminUsername: adminUsername
-        }
-
-        return resultLobby;
+        return {gameId: resultGame._id.toString()};
     }
 
-    async findAll(accountId: string): Promise<GetGameShortDto[]> {
+    async getAll(accountId: string): Promise<GetGameShortDto[]> {
         const existingAccount = await this.accountService.getAccountById(accountId);
 
         if(!existingAccount.games) {
@@ -73,21 +47,20 @@ export class GameService {
 
         let games: GetGameShortDto[] = [];
         for (let gameId of existingAccount.games) {
-            try {
-                const game: GetGameDetailsDto = await this.findById(gameId.toString(), accountId);
+                const game = await this.findById(gameId.toString());
 
-                const gameAdminAvatar = (await this.accountService.getAccountById(game.admin)).avatar;
+                const gameAdminAvatar = (await this.accountService.getAccountById(game.adminId.toString())).avatar;
 
                 let amountPaid = -1;
                 for (let result of game.results) {
-                    if(result.account = accountId) {
+                    if(result.accountId = accountId) {
                         amountPaid = result.amount;
                         break;
                     }
                 }
 
                 const gameInfos: GetGameShortDto = {
-                    id: game.id, 
+                    id: game._id.toString(),
                     adminAvatar: gameAdminAvatar,
                     title: game.title,
                     amountPaid: amountPaid
@@ -95,117 +68,108 @@ export class GameService {
 
                 games.push(gameInfos);
 
-            } catch (error) {
-                this.logger.error(error)
-            }
         }
 
         return games;
     }
 
-    async findById(gameId: String, accountId: string): Promise<GetGameDetailsDto> {
-        const existingGame = await this.gameModel.findById(new mongoose.Types.ObjectId(gameId));
+    async getOneWithoutResults(gameId: string): Promise<GetGameWithoutResults> {
+        const game = await this.findById(gameId);
 
-        if (!existingGame) {
-            throw new NotFoundException(`Game #${gameId} not found`);
+        let adminUsername = (await this.accountService.getAccountById(game.adminId.toString())).username;
+
+        const returnGame = {
+            title: game.title,
+            mode: game.mode, 
+            amount: game.amount, 
+            adminUsername: adminUsername,
         }
 
-        let gameParticipaints = []
-        for (let result of existingGame.results) {
-            gameParticipaints.push(result.account);
-        }
-        if (!gameParticipaints.includes(accountId)) {
-            throw new UnauthorizedException('Requester is not game participaint')
-        }
-
-        const gameDto: GetGameDetailsDto = {
-            id: existingGame._id.toString(), 
-            title: existingGame.title, 
-            splitMethod: existingGame.splitMethod, 
-            amount: existingGame.amount,
-            admin: existingGame.admin.toString(),
-            results: existingGame.results
-        }
-
-        return gameDto;
+        return returnGame;
     }
 
-    async updateResults(accountId: string, gameId: string, updateGameDto: UpdateGameDto): Promise<GetGameDetailsDto> {
-        const LOBBY_ID = updateGameDto.lobbyId;
-        const GAME_ID = gameId;
+    async getOneWithResults(gameId: string, accountId: string): Promise<GetGameWithResults> {
+        const existingGame = await this.findById(gameId);
 
-        // find lobby
-        const existingLobby = await this.lobbyService.findLobbyById(LOBBY_ID);
-        if (!existingLobby) {
-            throw new NotFoundException(`Loby not found`);
+        if (this.accountHasGameResult(accountId, existingGame)) {
+            let adminUsername = (await this.accountService.getAccountById(existingGame.adminId.toString())).username;
+
+            let returnResults = []
+            for(let result of existingGame.results) {
+                const account = await this.accountService.getAccountById(result.accountId);
+                const returnResult = {
+                    username: account.username,
+                    avatar: account.avatar,
+                    amount: result.amount
+                }
+                returnResults.push(returnResult); 
+            }
+            const returnGame = {
+                title: existingGame.title,
+                mode: existingGame.mode, 
+                amount: existingGame.amount, 
+                adminUsername: adminUsername,
+                results: returnResults
+            }
+
+            return returnGame;
         }
 
-        if (gameId != existingLobby.gameId) {
-            throw new BadRequestException("Given gameId doesn't match internal gameId")
-        }
+        return null;
+    }
+
+    async updateResults(accountId: string, gameId: string, updateGameDto: UpdateGameDto) {
 
         // find game
-        let existingGame = await this.gameModel.findById(GAME_ID);
-        if (!existingGame) {
-            throw new NotFoundException(`Game not found`);
-        }
-        if (existingGame.admin.toString() != accountId) {
+        let existingGame = await this.findById(gameId);
+
+        if (existingGame.adminId.toString() != accountId) {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         }
         this.logger.debug("Game is found");
 
-        this.lobbyService.deleteLobby(LOBBY_ID);
-        this.logger.debug("Lobby is deleted");
-
         // add admin to the list of account
-        let allAccountIds: string[] = updateGameDto.guestAccounts;
-        allAccountIds.push(existingGame.admin.toString())
+        let allAccountIds = []
+        for (let username of updateGameDto.guestAccountUsernames) {
+            let account = await this.accountService.getAccountByUsername(username);
+            allAccountIds.push(account._id.toString())
+        }
+        allAccountIds.push(accountId)
         
         // get results
-        const results: Result[] = this.getResults(existingGame.amount, existingGame.splitMethod, allAccountIds)
+        const results: Result[] = this.generateResults(existingGame.amount, existingGame.mode, allAccountIds)
 
         // update game
         let updatedGame = {
             results: results
         }
-        existingGame = await this.gameModel.findByIdAndUpdate(GAME_ID, updatedGame, { new: true });
+        existingGame = await this.gameModel.findByIdAndUpdate(gameId, updatedGame, { new: true });
         this.logger.debug("Game is updated");
 
         // update participaints accounts adding the game to heir games lists
         for (let accountId of allAccountIds) {
-            await this.accountService.update(accountId, {gameId: GAME_ID})
+            await this.accountService.update(accountId, {gameId: gameId})
         }
         this.logger.debug("Game is added to participaints accounts");
-
-        let returnGame: GetGameDetailsDto = {
-            id: existingGame._id.toString(), 
-            title: existingGame.title, 
-            splitMethod: existingGame.splitMethod, 
-            amount: existingGame.amount,
-            admin: existingGame.admin.toString(), 
-            results: existingGame.results
-        }
-        return returnGame;
     }
 
-    // demo only
+    private async deleteFromDb(gameId: string) {
+        await this.gameModel.findByIdAndDelete(gameId).exec();
+        return HttpStatus.NO_CONTENT;
+    }
+
     async delete(accountId: string, gameId: string) {
-        const existingGame = await this.gameModel.findById(gameId);
-        if (!existingGame) {
-            throw new NotFoundException(`Game not found`);
+        const existingGame = await this.findById(gameId);
+
+        if(accountId != existingGame.adminId.toString()) {
+            throw new HttpException(`You cannot delete this game`, HttpStatus.UNAUTHORIZED);
         }
 
-        if(accountId === existingGame.admin.toString()) {
-            await this.gameModel.findByIdAndDelete(gameId);
-            return HttpStatus.NO_CONTENT;
-        }
-        else {
-            throw new UnauthorizedException();
-        }
+        await this.deleteFromDb(gameId);
     }
 
     // public so it's accessible to populateDb.service.ts
-    public getResults(amount: number, splitMethod: string, allAccounts: string[]): Result[] {
+    public generateResults(amount: number, splitMethod: string, allAccounts: string[]): Result[] {
         
         const numberOfResults = allAccounts.length; // + the game owner
         let amounts: number[] = []
@@ -238,7 +202,7 @@ export class GameService {
 
                 break;
             default:
-                throw new NotFoundException(`Split method not found`);
+                throw new HttpException('Wrong split method', HttpStatus.BAD_REQUEST);
         }
 
         // randomize the order of amounts
@@ -247,7 +211,7 @@ export class GameService {
         // assign amount to account
         for(let i=0; i < numberOfResults; i++) {
             let result: Result = {
-                account: allAccounts.at(i),
+                accountId: allAccounts.at(i),
                 amount: amounts.at(i)
             }
             results.push(result)
@@ -256,22 +220,28 @@ export class GameService {
         return results;
     }
 
-    // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-    public shuffleArray(array: any[]) {
-        let currentIndex = array.length,  randomIndex;
-      
-        // While there remain elements to shuffle.
-        while (currentIndex != 0) {
-      
-          // Pick a remaining element.
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
+    private async findById(gameId: string) {
+        const existingGame = await this.gameModel.findById(new mongoose.Types.ObjectId(gameId));
+
+        if (!existingGame) {
+            this.logger.debug('Game not found')
+            throw new HttpException('Game not found be', HttpStatus.NOT_FOUND)
         }
-      
-        return array;
+
+        return existingGame;
+    }
+
+    private accountHasGameResult(requesterId: string, existingGame: Game) {
+        if(!Array.isArray(existingGame.results) || !existingGame.results) {
+            return false;
+        }
+
+        for(let result of existingGame.results) {
+            if(result.accountId === requesterId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

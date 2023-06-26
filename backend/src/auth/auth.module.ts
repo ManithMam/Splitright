@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AccountsModule } from '../account/account.module';
+import { AccountModule } from '../account/account.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategy/local.strategy';
@@ -11,7 +11,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
     imports: [
-        AccountsModule, 
+        AccountModule, 
         PassportModule,
         JwtModule.registerAsync(jwtConfig)
     ],
