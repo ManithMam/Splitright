@@ -23,9 +23,9 @@ export class Account{
 export const AccountSchema = SchemaFactory.createForClass(Account);
 
 AccountSchema.pre('save', async function(next){
-    try{
+    try{        
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(this.password, salt);
+        const hashedPassword = await bcrypt.hash(this.password, salt);        
         this.password = hashedPassword;        
         next();
     }
@@ -33,3 +33,7 @@ AccountSchema.pre('save', async function(next){
         next(err);
     }
 })
+
+
+
+

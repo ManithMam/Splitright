@@ -1,7 +1,7 @@
 import { Controller, Get, Header, Param, StreamableFile, UseFilters } from '@nestjs/common';
 import { FileService } from './file.service';
 import { ApiTags } from '@nestjs/swagger';
-import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
+import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
 
 @ApiTags('files')
 @Controller('files')

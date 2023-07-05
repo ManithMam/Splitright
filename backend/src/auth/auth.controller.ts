@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseFilters, UseGuards} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard'
-import { AccountDto } from 'src/account/dto/accountDTO';
+import { AccountDto } from '../account/dto/accountDTO';
 import { ApiTags } from '@nestjs/swagger';
-import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
+import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
 
 @ApiTags('auth')
 @Controller('auth')

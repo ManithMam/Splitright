@@ -2,10 +2,10 @@ import { WebSocketGateway, OnGatewayConnection, OnGatewayDisconnect, WebSocketSe
 import { LobbyService } from "./lobby.service";
 import { Server, Socket} from "socket.io";
 import { CreateLobbyDto } from "./dto/createLobby.dto";
-import { AuthService } from "src/auth/auth.service";
-import { AccountService } from "src/account/accounts.service";
+import { AuthService } from "../auth/auth.service";
+import { AccountService } from "../account/accounts.service";
 import { Logger, UseFilters} from "@nestjs/common";
-import { WsExceptionFilter } from "src/exceptions/ws-exception.filter";
+import { WsExceptionFilter } from "../exceptions/ws-exception.filter";
 
 @WebSocketGateway({ 
   namespace: '/lobbies',
@@ -143,7 +143,7 @@ export class LobbyGateway implements OnGatewayConnection, OnGatewayDisconnect {
       throw new WsException("Forbidden");
     }
 
-    const accountIdToBeKickedOut = (await this.accountService.getAccountByUsername(guestUsername)).id;
+    const accountIdToBeKickedOut = (await this.accountService.getAccountByUsername({username: guestUsername})).id;
 
     const socketId = this.guestAccountIdToSocketId.get(accountIdToBeKickedOut); 
 

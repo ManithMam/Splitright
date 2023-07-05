@@ -6,9 +6,12 @@ import { UpdateGameDto } from './dto/updateGame.dto';
 import { Result } from './result/result.model';
 import { GetGameWithResults } from './dto/getGameWithResults.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { AccountService } from 'src/account/accounts.service';
+import { AccountService } from '../account/accounts.service';
+import { LobbyService } from '../lobby/lobby.service';
+import { CreateLobbyDto } from 'src/lobby/dto/createLobby.dto';
+import { GetLobbyDto } from 'src/lobby/dto/getLobby.dto';
 import { GetGameShortDto } from './dto/getGameShort.dto';
-import { shuffleArray } from '@utils/utils';
+import { shuffleArray } from '../utils/utils';
 import { GetGameWithoutResults } from './dto/getGameWithoutResults.dto';
 
 @Injectable()
@@ -142,9 +145,9 @@ export class GameService {
         existingGame = await this.gameModel.findByIdAndUpdate(gameId, updatedGame, { new: true });
         this.logger.debug("Game is updated");
 
-        // update participaints accounts adding the game to heir games lists
+        // update participaints accounts adding the game to their games lists
         for (let accountId of updateGameDto.guestAccountIds) {
-            await this.accountService.update(accountId, {gameId: gameId})
+            await this.accountService.updateGames(accountId, {gameId: gameId})
         }
         this.logger.debug("Game is added to participaints accounts");
     }

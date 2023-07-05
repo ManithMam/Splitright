@@ -1,0 +1,54 @@
+###
+
+POST http://localhost:3000/auth/register HTTP/1.1
+content-type: application/json
+
+{
+    "username": "newUser",
+    "password": "coolesPasswort"
+}
+
+
+
+###
+
+POST http://localhost:3000/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "neUser",
+    "password": "coolesPasswort"
+}
+
+
+###
+
+GET http://localhost:3000/accounts/me HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RUZXN0ZXJtYW5uIiwic3ViIjoibmV3UGFzczEyMyIsImlhdCI6MTY4ODE0MzUxOSwiZXhwIjoxNjg4MjI5OTE5fQ.gLSWgKzgglkt1HIhdTdSOkh93Us525kEQ_KjiMgqKRE
+
+###
+
+GET http://localhost:3000/accounts/649f00a66edad9091241e147 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RUZXN0ZXJtYW5uIiwic3ViIjoiY29vbGVzUGFzc3dvcnQiLCJpYXQiOjE2ODgxNDA4NDEsImV4cCI6MTY4ODIyNzI0MX0.5Lk7h0s0k4D25lk3Ztj7yfGTOD4vw4wFSt9tgtmDL7U
+
+###
+
+PATCH http://localhost:3000/accounts/649f051b7fc7ffbc7e148df6 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RUZXN0ZXJtYW5uIiwic3ViIjoiY29vbGVzUGFzc3dvcnQiLCJpYXQiOjE2ODgxNDA4NDEsImV4cCI6MTY4ODIyNzI0MX0.5Lk7h0s0k4D25lk3Ztj7yfGTOD4vw4wFSt9tgtmDL7U
+
+{
+    "name": "TestMax234"
+}
+
+###
+
+PATCH http://localhost:3000/accounts/649f051b7fc7ffbc7e148df6 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RNYXgyMyIsInN1YiI6ImNvb2xlc1Bhc3N3b3J0IiwiaWF0IjoxNjg4MTQzMDI4LCJleHAiOjE2ODgyMjk0Mjh9.x902L0czza6T5DMVR1Pq0xmuDhGH6xOIah2r-hKWqxo
+
+{
+    "password": "newPass123"
+}

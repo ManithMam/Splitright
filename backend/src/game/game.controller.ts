@@ -3,11 +3,11 @@ import { GameService } from './game.service';
 import { CreateGameDto } from './dto/createGame.dto';
 import { UpdateGameDto } from './dto/updateGame.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { GetGameWithResults } from './dto/getGameWithResults.dto';
 import { GetGameShortDto } from './dto/getGameShort.dto';
 import { GetGameWithoutResults } from './dto/getGameWithoutResults.dto';
-import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
+import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
 
 @ApiTags('games')
 @Controller('games')
