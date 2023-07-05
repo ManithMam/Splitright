@@ -5,7 +5,6 @@ import Dialog from '@mui/material/Dialog';
 import { DialogContent, TextField } from '@mui/material';
 import './CreateGameDialog.css';
 import { useState } from 'react';
-import { getLobby, joinLobby } from '../../../logic/lobby-service';
 import { useNavigate } from 'react-router-dom';
 
 export default function JoinGameDialog() {
@@ -38,10 +37,7 @@ export default function JoinGameDialog() {
     }
 
     if (code && code.length === 7) {
-      const lobbyId = await joinLobby(code);
-      if(lobbyId) {
-        navigate("/lobbyGuest/" + lobbyId);
-      }
+      navigate("/lobbyGuest/" + code);
     }
   }
 

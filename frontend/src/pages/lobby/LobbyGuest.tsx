@@ -1,99 +1,96 @@
 import React, { useState, useEffect } from "react";
 import "./Lobby.css";
-import { Avatar, Button, CircularProgress, ListItemAvatar, Typography } from "@mui/material";
+import { Avatar, Button, ListItemAvatar, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate, useParams } from "react-router-dom";
-import { Lobby, getLobby, exitLobby } from "../../logic/lobby-service";
-import { GameDetails, GameWithoutResults, getGameById, getGameForLobby } from "../../logic/game-service";
+import { Lobby } from "../../logic/models/Lobby";
+import { GameWithoutResults } from "../../logic/models/GameWithoutResults"; 
+import { getGameForLobby } from "../../logic/game-service";
 import GameInfoBox from "../../shared/gameInfoBox/GameInfoBox";
+import { getAccessToken } from "../../logic/auth-service";
+import { Socket, io } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
+
 
 const LobbyGuest = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [lobby, setLobby] = useState<Lobby>();
+  const { code } = useParams();
+  const [lobbyInfo, setLobbyInfo] = useState<Lobby>();
   const [game, setGame] = useState<GameWithoutResults>();
-  let lastFetchedLobby: Lobby;
-  const [isLoading, setIsLoading] = useState(true);
   const message = "Waiting for host to start";
   const [periods, setPeriods] = useState(".");
+  const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (id) {
-          let fetchedLobby = await getLobby(id);
+    const token = getAccessToken();
 
-          //no lobby infos for you
-          if (fetchedLobby.message) {
+    const newSocket = io('http://localhost:3000/lobbies', {
+        transportOptions: {
+        polling: {
+            extraHeaders: {
+            'access_token': token,
+            },
+        },
+        },
+    });
 
-            //lobby doesn't exist
-            if(fetchedLobby.message === "Lobby not found") {
-              if(lastFetchedLobby && lastFetchedLobby.gameId) {
-                let fetchedGame = await getGameById(lastFetchedLobby.gameId);
-                if(fetchedGame && fetchedGame.results) {
-                  navigate("/gameResults/" + lastFetchedLobby.gameId);
-                }
-                else {
-                  navigate("/home");
-                }
-              }
-              
-            }
-            // you don't have access to lobby
-            else if(fetchedLobby.message === "You got kicked out") {
-              navigate("/home");
-            }
-          }
-          // lobby infos
-          else if (fetchedLobby && fetchedLobby.gameId) {
-            lastFetchedLobby = fetchedLobby;
-            let updatedGame = await getGameForLobby(fetchedLobby.gameId);
-            if(updatedGame) {
-              setLobby(fetchedLobby);
-              setGame(updatedGame);
-            }
-            setPeriods((prevPeriods) => {
-              if (prevPeriods === "...") {
-                return ".";
-              } else {
-                return prevPeriods + ".";
-              }
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching last splits:", error);
-      } finally {
-        setIsLoading(false);
+    setSocket(newSocket);
+
+    newSocket.on('connect', () => {
+      console.log('Connected to the WebSocket server');
+    });
+
+    newSocket.emit('joinLobby', code);
+
+    newSocket.on('lobbyInfo', async (data) => {
+
+      if(data === 'Lobby admin kicked you out' || data === 'Lobby was deleted by admin') {
+        handleDisconnect();
+        return;
       }
+
+      else if(!data.code) {
+        navigate("/gameResults/" + data.gameId)
+      }
+
+      setLobbyInfo(data);
+
+      try {
+        const result = await getGameForLobby(data?.gameId!);
+        setGame(result);
+      } catch (error) {
+        console.error('Error fetching game data:', error);
+      }
+    });
+
+    const changePeriods = () => {
+      setPeriods((prevPeriods) => {
+        if (prevPeriods === "...") {
+          return ".";
+        } else {
+          return prevPeriods + ".";
+        }
+      });
     };
 
-    fetchData();
-
-    const intervalId = setInterval(fetchData, 2000); // fetch every 2 seconds
+    const intervalId = setInterval(changePeriods, 2000); // every 2 seconds
 
     return () => {
       clearInterval(intervalId); // clean interval on component unmount
+      newSocket.disconnect();
     };
-  }, [id]);
+  }, [code]);
 
-  if (isLoading) {
-    return <Box sx={{ display: 'flex'}}> <CircularProgress /> </Box>;
-  }
-
-  const handleCancel = async () => {
-    if(id) {
-      await exitLobby(id);
-    }
+  const handleDisconnect = () => {
+    navigate("/home")
   };
-
 
   return (
     <div className="PageContainer">
-      <GameInfoBox game={game} code={lobby?.code} />
+      <GameInfoBox game={game} code={lobbyInfo?.code} />
 
       <Box className="Box" sx={{ bgcolor: "primary.light" }}>
         <Typography
@@ -108,7 +105,7 @@ const LobbyGuest = () => {
           Guests
         </Typography>
         <List>
-          {lobby?.guestAccounts?.map((account, index) => (
+          {lobbyInfo?.guestAccounts?.map((account, index) => (
             <ListItem
               key={index}
               style={{ display: "flex", justifyContent: "space-around" }}
@@ -123,7 +120,7 @@ const LobbyGuest = () => {
       </Box>
 
 
-      <Button variant="outlined" className="Btn SecondaryBtn" onClick={handleCancel}>
+      <Button variant="outlined" className="Btn SecondaryBtn" onClick={handleDisconnect}>
         Cancel
       </Button>
 

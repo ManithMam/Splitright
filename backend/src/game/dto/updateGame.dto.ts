@@ -5,10 +5,5 @@ export class UpdateGameDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsArray()
-    guestAccountUsernames: string[];
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    lobbyId: string
+    guestAccountIds: string[];
 }

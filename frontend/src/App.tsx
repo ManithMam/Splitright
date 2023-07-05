@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
 import HomePage from './pages/home/HomePage';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -10,6 +10,7 @@ import LobbyPage from './pages/lobby/LobbyAdmin';
 import PrevGamesPage from './pages/prevGames/PrevGamesPage';
 import GameResultsPage from './pages/gameResults/GameResultsPage';
 import LobbyGuest from './pages/lobby/LobbyGuest';
+import { getAccessToken, removeAccessToken } from './logic/auth-service';
 
 const theme = createTheme({
   palette: {
@@ -52,17 +53,21 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isLoggendIn, redirectPa
 };
 
 function App() {
-  const [isLoggendIn, setIsLoggendIn] = React.useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    const token = getAccessToken();
+    return !!token; // state based on the presence of token in local storage
+  });
 
   const handleLogout = () => {
-    setIsLoggendIn(false)
+    removeAccessToken();
+    setIsLoggedIn(false);
   }
 
   return (
       <ThemeProvider theme={theme}>
         <div className='App'>
 
-          {isLoggendIn && ( // Render only if user is not null
+          {isLoggedIn && ( // render only if user is not null
             <div className='Logout'>
               <Button onClick={handleLogout} component={Link} to="/login" endIcon={<LogoutIcon />}>
                 Logout
@@ -72,15 +77,15 @@ function App() {
 
           <div className='AppContent'>
             <Routes>
-              <Route element={<ProtectedRoute isLoggendIn={isLoggendIn} />} >
+              <Route element={<ProtectedRoute isLoggendIn={isLoggedIn} />} >
                 <Route path="/home" element={<HomePage/>} />
                 <Route path="/previousGames" element={<PrevGamesPage/>} />
                 <Route path="/gameResults/:id" element={<GameResultsPage/>} />
-                <Route path="/lobbyAdmin/:lobbyId" element={<LobbyPage/>} />
-                <Route path="/lobbyGuest/:id" element={<LobbyGuest/>} />
+                <Route path="/lobbyAdmin/:gameId" element={<LobbyPage/>} />
+                <Route path="/lobbyGuest/:code" element={<LobbyGuest/>} />
               </Route>
-              <Route index element={<LoginPage setIsLoggendIn={setIsLoggendIn} />} />
-              <Route path="/login" element={<LoginPage setIsLoggendIn={setIsLoggendIn} />} />
+              <Route index element={<LoginPage setIsLoggendIn={setIsLoggedIn} />} />
+              <Route path="/login" element={<LoginPage setIsLoggendIn={setIsLoggedIn} />} />
               <Route path="*" element={<p>There's nothing here: 404!</p>} />              
             </Routes>
           </div>

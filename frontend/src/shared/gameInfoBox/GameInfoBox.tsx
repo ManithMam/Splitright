@@ -5,9 +5,8 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { GameWithoutResults } from "../../logic/game-service";
 import CodeBtn from "./CodeBtn";
-import { width } from "@mui/system";
+import { GameWithoutResults } from "../../logic/models/GameWithoutResults";
 
 interface GameInfoBoxProps {
     game: GameWithoutResults | undefined,

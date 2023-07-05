@@ -6,7 +6,6 @@ import { DialogContent, TextField } from '@mui/material';
 import './CreateGameDialog.css';
 import { useState } from 'react';
 import {createGame} from "../../../logic/game-service";
-import {createLobby} from "../../../logic/lobby-service";
 import { useNavigate } from 'react-router-dom';
 import ModeToggleButton from './ModeToggleButton';
 
@@ -52,15 +51,14 @@ export default function CreateGameDialog() {
     }
 
     if (title && amount && !isNaN(Number(amount))) {
-      const gameId = await createGame({
+
+      const gameId: string = await createGame({
         title: title,
         mode: mode,
         amount: Number(amount),
       })
       if(gameId) {
-        const lobbyId = await createLobby(gameId);
-
-        navigate("/lobbyAdmin/" + lobbyId);
+        navigate("/lobbyAdmin/" + gameId);
       }
     }
   }

@@ -11,8 +11,6 @@ import { FileModule } from './file/file.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HealthModule } from './health/health.module';
 import configuration from 'config/configuration';
-import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './http-exception.filter';
 
 @Module({
   imports: [     
@@ -38,10 +36,6 @@ import { HttpExceptionFilter } from './http-exception.filter';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
   ],
 })
 export class AppModule { }

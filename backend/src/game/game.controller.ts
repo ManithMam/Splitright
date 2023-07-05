@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { GetGameWithResults } from './dto/getGameWithResults.dto';
 import { GetGameShortDto } from './dto/getGameShort.dto';
 import { GetGameWithoutResults } from './dto/getGameWithoutResults.dto';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { HttpExceptionFilter } from 'src/exceptions/http-exception.filter';
 
 @ApiTags('games')
 @Controller('games')

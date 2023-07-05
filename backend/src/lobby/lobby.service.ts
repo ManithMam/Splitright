@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Lobby } from './lobby.schema';
@@ -9,6 +9,7 @@ import { GetLobbyDto } from './dto/getLobby.dto';
 import { CreateLobbyDto } from './dto/createLobby.dto';
 import { GuestAccount } from './dto/guestAccount';
 import { GameService } from 'src/game/game.service';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class LobbyService {
@@ -19,34 +20,30 @@ export class LobbyService {
   @Inject(GameService)
   private readonly gameService: GameService;
 
+  private readonly logger = new Logger(LobbyService.name);
+
   constructor(@InjectModel(Lobby.name) private readonly lobbyModel: Model<Lobby>) {}
 
   async create(createLobbyDto: CreateLobbyDto, adminId: string): Promise<{lobbyId: string}> {
+    let code = await this.generateCode();
+
     let lobby: Lobby = {
       gameId: createLobbyDto.gameId,
-      code: randomstring.generate(7) as string,
+      code: code,
       adminId: adminId
     }
     const newLobby = new this.lobbyModel(lobby);
     const result = await newLobby.save();
+
+    Logger.debug("Lobby created");
 
     return {
       lobbyId: result._id.toString()    
     };
   }
 
-  async getById(lobbyId: string, requesterId: string): Promise<GetLobbyDto> {
-    const existingLobby = await this.findLobbyById(lobbyId);
-
-    // check if lobby exists
-    if(!existingLobby) {
-      throw new HttpException("Lobby not found", HttpStatus.NOT_FOUND);
-    }
-
-    // check if requester is part of the lobby
-    if(!this.IsLobbyParticipaint(existingLobby, requesterId)) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    }
+  async getById(lobbyId: string): Promise<GetLobbyDto> {
+    const existingLobby = await this.findLobbyByIdWithException(lobbyId)
 
     const guestAccounts = await this.getGuestAccounts(existingLobby.guestIds);
 
@@ -56,63 +53,82 @@ export class LobbyService {
       guestAccounts: guestAccounts
     }
 
+    this.logger.debug("Lobby returned")
+
     return resultLobby;
   }
 
-  async kickOutLobbyGuests(lobbyId: string, guestUsernames: string[], accountId: string) {
-    const lobby = await this.findLobbyById(lobbyId);
+  async isAllowedToKickOutLobbyGuest(lobbyId: string, accountId: string) {
+    const lobby = await this.findLobbyByIdWithException(lobbyId);
 
     if(!this.isLobbyAdmin(accountId, lobby)) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      return false;
     }
     
-    let guestIds = [];
-    for( let guestUsername of guestUsernames) {
-      const account = await this.accountService.getAccountByUsername(guestUsername)
-      guestIds.push(account._id.toString());
-    }
-
-    await this.updateLobbyGuests(lobbyId, guestIds);
+    return true;
   }
 
   async join(accountId: string, code): Promise<{lobbyId: string}> {
     const lobby = await this.findLobbyByCode(code);
 
-    let newGuestList = lobby.guestIds;
-    newGuestList.push(accountId);
+    // avoid a user joining multiple times
+    if(lobby.adminId != accountId && (!lobby.guestIds || !lobby.guestIds.includes(accountId))) {
+      let newGuestList = lobby.guestIds;
+      newGuestList.push(accountId);
+      await this.updateLobbyGuests(lobby._id.toString(), newGuestList);
+    }
 
-    await this.updateLobbyGuests(lobby._id.toString(), newGuestList);
-    
+    this.logger.debug("Lobby joined");
+
     return {lobbyId: lobby._id.toString()};
   }
 
   async exit(requesterAccountId: string, lobbyId: string) {
-    const existingLobby = await this.findLobbyById(lobbyId);
 
-    if(requesterAccountId === existingLobby.adminId) {
-      await this.deleteLobby(lobbyId);
-      await this.gameService.delete(requesterAccountId, lobbyId);
-    }
-    else {
-      let newGuestList = removeStringFromArray(existingLobby.guestIds, requesterAccountId);
-      await this.updateLobbyGuests(lobbyId, newGuestList);
-    }
+    const existingLobby = await this.findLobbyByIdWithException(lobbyId);
+    /*const existingLobby = await this.findLobbyById(lobbyId);
+
+      if(!existingLobby) {
+        return;
+      }*/
+
+      if(requesterAccountId === existingLobby.adminId) {
+        await this.deleteLobby(lobbyId);
+        // delete game too because it won't ever have results
+        await this.gameService.delete(requesterAccountId, existingLobby.gameId);
+
+        this.logger.debug("Admin exited lobby")
+
+        return false;
+      }
+      else {
+        let newGuestList = removeStringFromArray(existingLobby.guestIds, requesterAccountId);
+        await this.updateLobbyGuests(lobbyId, newGuestList);
+
+        this.logger.debug("Guest exited lobby")
+
+        return true;
+      }
   }
 
-  async deleteLobby(id: string) {
-    const existingLobby = await this.lobbyModel.findByIdAndDelete(id).exec();
+  async closeLobby(lobbyId: string, requesterAccountId: string) {
+    const existingLobby = await this.findLobbyByIdWithException(lobbyId);
 
-    return HttpStatus.NO_CONTENT;
-  }
-
-  async findLobbyByGameId(gameId: string) {
-    const existingLobby = await this.lobbyModel.findOne({gameId}).exec();
-
-    if(!existingLobby) {
-      return null
+    if(requesterAccountId != existingLobby.adminId) {
+      throw new WsException('Unauthorized');
     }
 
-    return existingLobby;
+    await this.gameService.updateResults(requesterAccountId, existingLobby.gameId, {guestAccountIds: existingLobby.guestIds});
+    
+    await this.deleteLobby(lobbyId);
+
+    this.logger.debug("Admin closed lobby")
+
+    return existingLobby.gameId;
+  }
+
+  private async deleteLobby(lobbyId: string) {
+    await this.lobbyModel.findByIdAndDelete(lobbyId).exec();
   }
 
   private async findLobbyByCode(code: string) {
@@ -129,7 +145,7 @@ export class LobbyService {
     const existingLobby = await this.lobbyModel.findById(id);
 
     if(!existingLobby) {
-      throw new HttpException("Lobby not found", HttpStatus.NOT_FOUND);
+      return null;
     }
 
     let result = {
@@ -146,24 +162,8 @@ export class LobbyService {
     return await this.lobbyModel.findByIdAndUpdate(id, {guestIds: guestIds}, { new: true });
   }
 
-  IsLobbyParticipaint(existingLobby: Lobby, requesterId: string) {
-    if(this.isLobbyAdmin(requesterId, existingLobby) ||  this.isLobbyGuest(requesterId, existingLobby)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  isLobbyAdmin(requesterId: string, existingLobby: Lobby) {
+  private isLobbyAdmin(requesterId: string, existingLobby: Lobby) {
     if(existingLobby.adminId === requesterId) {
-      return true;
-    }
-
-    return false;
-  }
-
-  isLobbyGuest(requesterId: string, existingLobby: Lobby) {
-    if(existingLobby.guestIds.includes(requesterId)) {
       return true;
     }
 
@@ -183,5 +183,28 @@ export class LobbyService {
     }
 
     return guestAccounts;
+  }
+
+  private async generateCode() {
+    let code = randomstring.generate(7) as string;
+
+    // code is not unique
+    if(await this.findLobbyByCode(code) === null) {
+      return code;
+    }
+
+    this.generateCode();
+  }
+
+  private async findLobbyByIdWithException(lobbyId: string) {
+    const lobby = await this.findLobbyById(lobbyId);
+
+    if(!lobby) {
+      const errorText = "Lobby not found"
+      this.logger.error(errorText)
+      throw new WsException(errorText);
+    }
+
+    return lobby;
   }
 }

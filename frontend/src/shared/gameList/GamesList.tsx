@@ -6,8 +6,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom';
 import './GamesList.css';
-import { ItemInfos } from '../../logic/game-service';
 import GameListItem from './gameListItem/GameListItem';
+import { ItemInfos } from '../../logic/models/ItemInfos';
 
 interface GamesListProps {
     games: ItemInfos[],
