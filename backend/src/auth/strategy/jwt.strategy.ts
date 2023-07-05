@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { AccountService } from 'src/account/accounts.service';
+import { AccountService } from '../../account/accounts.service';
 import { ReturnAccountDtoNoPassword } from '../../account/dto/returnAccountDTONoPassword';
 import { AccountDto } from '../../account/dto/accountDTO';
 
@@ -17,9 +17,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(payload: any): Promise<ReturnAccountDtoNoPassword>{                    
         const accountDto: AccountDto = {username: payload.username, password: payload.sub}
-        const user: ReturnAccountDtoNoPassword = await this.accountService.getAccountByUsernameAndPassword(accountDto)
+        const user: ReturnAccountDtoNoPassword = await this.accountService.getAccountByUsername(accountDto)
 
-        return user;;
+        return user;
     }
 
 }

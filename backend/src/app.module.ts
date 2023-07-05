@@ -10,7 +10,9 @@ import { AppService } from './app.service';
 import { FileModule } from './file/file.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HealthModule } from './health/health.module';
-import configuration from 'config/configuration';
+import configuration from '../config/configuration';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './exceptions/http-exception.filter';
 
 @Module({
   imports: [     
@@ -18,7 +20,7 @@ import configuration from 'config/configuration';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory:async (configService:ConfigService) => ({
-        uri: configService.get<string>('database.uri')
+        uri: configService.get<string>('MONGO_URI_HOST')
       }),
     }),
     ConfigModule.forRoot({

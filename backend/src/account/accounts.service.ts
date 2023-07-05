@@ -1,20 +1,28 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account, AccountDocument } from './account.schema';
-import { AccountDto } from './dto/accountDTO';
+import { AccountDto, AccountUsernameDto } from './dto/accountDTO';
 import { ReturnAccountDto} from './dto/returnAccountDTO';
-import { UpdateAccountDto } from './dto/updateAccount.dto';
+import { UpdateAccountGamesDto } from './dto/updateAccountGames.dto';
 import { ReturnAccountDtoNoPassword} from './dto/returnAccountDTONoPassword';
+import { UpdateAccountUsernameDto } from './dto/updateAccountUsername.dto';
+import { UpdateAccountPasswordDto } from './dto/updateAccountPassword.dto';
 
 @Injectable()
 export class AccountService {
     constructor(@InjectModel(Account.name) private accountModel: Model<AccountDocument>) {}   
 
-    async getAccountByUsernameAndPassword(accountToFind: AccountDto): Promise<ReturnAccountDto> {
+    private readonly logger = new Logger(AccountService.name);
+
+    async getAccountByUsername(accountToFind: AccountUsernameDto): Promise<ReturnAccountDto> {
         try{           
 
-            const account = await this.accountModel.findOne({username: accountToFind.username}).exec()
+            const account = await this.accountModel.findOne({username: accountToFind.username}).exec();
+
+            if(account){
+                this.logger.debug("Account found by username");
+            }            
 
             return {      
                 username: account.username,
@@ -24,40 +32,41 @@ export class AccountService {
                 id: account.id              
             }
         }
-        catch(err){
-            throw new NotFoundException('Account not found. Wrong username or password.')
+        catch(err){       
+            this.logger.error("Account not found");    
+            throw new NotFoundException('Account not found.')
         }
     }    
 
     async getAccountById(accountId: string) {
-        const existingAccount = await this.accountModel.findById(accountId);
+        try{
 
-        if(!existingAccount) {
-            throw new NotFoundException("Account not found. Wrong id.")
+            const existingAccount = await this.accountModel.findById(accountId)                  
+
+            const returnAccount = {
+                username: existingAccount.username, 
+                games: existingAccount.games, 
+                avatar: existingAccount.avatar,
+                id: existingAccount.id
+            }
+
+            this.logger.debug("Account returned by id.")
+
+            return returnAccount;
         }
-
-        const returnAccount = {
-            username: existingAccount.username, 
-            games: existingAccount.games, 
-            avatar: existingAccount.avatar
+        catch(err){
+            this.logger.error("Invalid MongoID"); 
+            throw new NotFoundException("Account not found by id");
         }
-
-        return returnAccount;
-    }
-
-    async getAccountByUsername(username: string) {
-        const existingAccount = await this.accountModel.findOne({username: username}).exec()
-
-        if(!existingAccount) {
-            throw new NotFoundException("Account not found. Wrong id.")
-        }
-
-        return existingAccount;
-    }
+        
+    }   
 
     async insertOne(account: AccountDto): Promise<ReturnAccountDtoNoPassword>{        
         try{
-            const newAccount = await this.accountModel.create(account)        
+            const newAccount = await this.accountModel.create(account);
+
+            this.logger.debug("New account created");
+
             return {            
                 username: newAccount.username,                
                 games: newAccount.games,
@@ -70,10 +79,95 @@ export class AccountService {
         }       
     }
 
-    async update(accountId: string, updateAccountDto: UpdateAccountDto): Promise<Account>{           
-        const account = await this.accountModel.findOneAndUpdate({_id: accountId}, 
-            {$push: {games: updateAccountDto.gameId}}, {new: true})
+    async updateGames(accountId: string, updateAccountDto: UpdateAccountGamesDto): Promise<ReturnAccountDtoNoPassword>{
+        try{
+            const newAccount = await this.accountModel.findOneAndUpdate({_id: accountId}, 
+                {$push: {games: updateAccountDto.gameId}}, {new: true});
+    
+            this.logger.debug("New game added to account.");
+    
+            return {            
+                username: newAccount.username,                
+                games: newAccount.games,
+                avatar: newAccount.avatar,
+                id: newAccount.id
+            }   
+        }     
+        catch{
+            this.logger.error("Invalid MongoID");            
+            throw new NotFoundException("Account not found by id");  
+        }        
+    }   
 
-        return account
+    async updateUsername(updateDto: UpdateAccountUsernameDto): Promise<ReturnAccountDtoNoPassword>{       
+        
+        //Validate mongo id coming from params
+        try{
+            await this.accountModel.findById(updateDto.id);
+            this.logger.debug("Valid Id")
+            
+        }
+        catch(err){
+            this.logger.error("Invalid MongoID");            
+            throw new NotFoundException("Account not found by id");           
+        }
+
+        try{
+            const newAccount = (await this.accountModel.findByIdAndUpdate(
+                updateDto.id,
+                { $set: { username: updateDto.newName } }, { new: true }))              
+            
+            this.logger.debug("Updated account username");
+     
+            return {            
+                username: newAccount.username,                
+                games: newAccount.games,
+                avatar: newAccount.avatar,
+                id: newAccount.id
+            }   
+        }
+        catch(err){
+            this.logger.error("Username duplication error");
+            throw new ConflictException("Account with that username already exists.")
+        }         
+    }
+    
+    async updatePassword(updateDto: UpdateAccountPasswordDto): Promise<ReturnAccountDto>{      
+        
+        try{
+            const newAccount = await (await this.accountModel.findOneAndUpdate(
+                { _id: updateDto.id },
+                { $set: { password: updateDto.newPassword } }, { new: true })).save();     
+    
+            this.logger.debug("Updated account password");
+                       
+            return {            
+                username: newAccount.username,                
+                games: newAccount.games,
+                avatar: newAccount.avatar,
+                id: newAccount.id,
+                password: newAccount.password
+            }   
+        }
+        catch{
+            this.logger.error("Invalid MongoID");   
+            throw new NotFoundException("Account not found by id");   
+        }       
+        
+    }
+
+    async deleteById(accountId: string){
+        try{
+            const accountToDelete = await this.accountModel.findByIdAndDelete(accountId);
+
+            this.logger.debug("Account deleted");
+
+            return(accountToDelete)
+        }
+        catch{
+            this.logger.error("Invalid MongoID")
+            throw new NotFoundException("Could not find account with that id.");
+        }
+        
     }
 }

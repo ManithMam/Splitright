@@ -1,11 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Account, AccountDocument } from 'src/account/account.schema';
-import { AccountService } from 'src/account/accounts.service';
-import { Game } from 'src/game/game.schema';
-import { GameService } from 'src/game/game.service';
-import { shuffleArray } from '@utils/utils';
+import { Account, AccountDocument } from '../account/account.schema';
+import { AccountService } from '../account/accounts.service';
+import { Game } from '../game/game.schema';
+import { GameService } from '../game/game.service';
+import { shuffleArray } from '../utils/utils';
 
 @Injectable()
 export class PopulateDbService {
@@ -96,8 +96,6 @@ export class PopulateDbService {
 
             this.logger.debug("Game created: " + newGame)
         }
-
-
     }
 
     selectPlayers(accountIds: string[]): SelectedPlayers {
@@ -115,7 +113,7 @@ export class PopulateDbService {
 
     updateAccounts(accountIds: string[], gameId: string) {
         for(let accountId of accountIds) {
-            this.accoutService.update(accountId, {gameId: gameId})
+            this.accoutService.updateGames(accountId, {gameId: gameId})
         }
     }
 }

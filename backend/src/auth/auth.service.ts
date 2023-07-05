@@ -1,5 +1,5 @@
-import { BadRequestException, HttpCode, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AccountService } from 'src/account/accounts.service';
+import { BadRequestException, HttpCode, Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { AccountService } from '../account/accounts.service';
 import { AccountDto } from '../account/dto/accountDTO';
 import { Account } from '../account/account.schema';
 import { JwtService } from '@nestjs/jwt';
@@ -11,20 +11,25 @@ export class AuthService {
         private accountsService: AccountService,
         private jwtService: JwtService) {}
 
+    private readonly logger = new Logger(AuthService.name);
+
     async validateAccount(accountToFind: AccountDto): Promise<Account> {
-        const account = await this.accountsService.getAccountByUsernameAndPassword(accountToFind)
+        const account = await this.accountsService.getAccountByUsername(accountToFind)
        
         const isSamePassword = await bcrypt.compare(accountToFind.password, account.password)
 
         if(!isSamePassword){
             throw new UnauthorizedException()
-        }         
+        }
+        else{
+            this.logger.debug("Account is valid")
+        }     
        
         return account;        
     }
 
     async login(accountDto: AccountDto) {     
-        const account = await this.accountsService.getAccountByUsernameAndPassword(accountDto)
+        const account = await this.accountsService.getAccountByUsername(accountDto)
         const token = await this.getToken(account.username, account.id);
 
         return {
@@ -36,6 +41,7 @@ export class AuthService {
         const newAccount = await this.accountsService.insertOne(account);
         
         if (newAccount) {
+            this.logger.debug("New account registered")
             return HttpCode(201);
         }
         else {

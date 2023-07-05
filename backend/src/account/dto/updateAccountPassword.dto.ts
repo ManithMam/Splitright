@@ -1,21 +1,21 @@
 import { IsNotEmpty, IsString } from "class-validator"
 
+export class UpdateAccountPasswordDto {
 
-export class AccountDto {
-   
     @IsNotEmpty()
     @IsString()
-    username: string
-   
+    id: string;
+
     @IsNotEmpty()
     @IsString()
-    password: string
+    newPassword: string;
+
 }
 
-export class AccountUsernameDto {
+export class PasswordDto {
 
     @IsNotEmpty()
     @IsString()
-    username: string
+    newPassword: string;
 
 }

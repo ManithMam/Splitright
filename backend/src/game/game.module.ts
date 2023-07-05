@@ -3,7 +3,8 @@ import { GameController } from './game.controller';
 import { GameService } from './game.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Game, GameSchema } from './game.schema';
-import { AccountModule } from 'src/account/account.module';
+import { AccountModule } from '../account/account.module'
+import { LobbyModule } from '../lobby/lobby.module';
 
 @Module({
     imports: [    

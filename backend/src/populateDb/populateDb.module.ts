@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AccountModule } from 'src/account/account.module';
-import { GameModule } from 'src/game/game.module';
-import { PopulateDbService } from 'src/populateDb/populateDb.service';
+import { AccountModule } from '../account/account.module';
+import { GameModule } from '../game/game.module';
+import { PopulateDbService } from '../populateDb/populateDb.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Game, GameSchema } from 'src/game/game.schema';
-import { Account, AccountSchema } from 'src/account/account.schema';
+import { Game, GameSchema } from '../game/game.schema';
+import { Account, AccountSchema } from '../account/account.schema';
 import { PopulateDbController } from './populateDb.controller';
 
 @Module({

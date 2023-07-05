@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Lobby } from './lobby.schema';
 import * as randomstring from "randomstring";
-import { removeStringFromArray } from '@utils/utils';
-import { AccountService } from 'src/account/accounts.service';
+import { removeStringFromArray } from '../utils/utils';
+import { AccountService } from '../account/accounts.service';
 import { GetLobbyDto } from './dto/getLobby.dto';
 import { CreateLobbyDto } from './dto/createLobby.dto';
 import { GuestAccount } from './dto/guestAccount';
-import { GameService } from 'src/game/game.service';
+import { GameService } from '../game/game.service';
 import { WsException } from '@nestjs/websockets';
 
 @Injectable()
