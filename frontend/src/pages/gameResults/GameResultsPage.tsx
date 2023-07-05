@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import {getGameById, GameDetails} from "../../logic/game-service";
+import { getGameById } from "../../logic/game-service";
 import {Typography, Box, List, ListItem, ListItemText, Button, CircularProgress } from '@mui/material';
 import './GameResultsPage.css';
 import { Link } from 'react-router-dom';
 import GameInfoBox from '../../shared/gameInfoBox/GameInfoBox';
 import GameListItem from '../../shared/gameList/gameListItem/GameListItem';
+import { GameDetails } from '../../logic/models/GameDetails';
 
 const GameResultsPage = () => {
   const { id } = useParams();
@@ -35,9 +36,9 @@ const GameResultsPage = () => {
       try {
         if(id) {
           const fetchedGame = await getGameById(id);
-        if(fetchedGame) {
-          setGameDetails(fetchedGame);
-        }
+          if(fetchedGame) {
+            setGameDetails(fetchedGame);
+          }
         }
       } catch (error) {
         console.error('Error fetching last splits:', error);

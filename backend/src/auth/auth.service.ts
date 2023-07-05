@@ -23,8 +23,9 @@ export class AuthService {
         return account;        
     }
 
-    async login(account: AccountDto) {     
-        const token = await this.getToken(account.username, account.password);
+    async login(accountDto: AccountDto) {     
+        const account = await this.accountsService.getAccountByUsernameAndPassword(accountDto)
+        const token = await this.getToken(account.username, account.id);
 
         return {
             token: token.access_token,
@@ -42,11 +43,15 @@ export class AuthService {
         }
     }
 
-    private async getToken(username: string, password: string) {
-        const payload = { username: username, sub: password}
+    private async getToken(username: string, accountId: string) {
+        const payload = { username: username, sub: accountId}
         return{
             access_token: this.jwtService.sign(payload)
         }
+    }
+
+    async verifyJwt(jwt: string): Promise<any> {
+        return this.jwtService.verifyAsync(jwt);
     }
     
 }

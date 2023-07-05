@@ -16,7 +16,8 @@ import { JwtStrategy } from './strategy/jwt.strategy';
         JwtModule.registerAsync(jwtConfig)
     ],
     providers: [AuthService, LocalStrategy, JwtStrategy],
-    controllers: [AuthController]
+    controllers: [AuthController],
+    exports: [AuthService]
 })
 
 export class AuthModule {}

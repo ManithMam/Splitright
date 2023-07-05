@@ -1,54 +1,10 @@
 import {getAccessToken} from "./auth-service";
-import { deleteLobby } from "./lobby-service";
-
-export interface GameShort {
-    id: string, 
-    adminAvatar: string,
-    title: string,
-    amountPaid: number
-}
-
-export interface ItemInfos {
-  id?: string, 
-  avatar: string,
-  text: string,
-  amount: number
-}
-
-export interface CreateGame {
-  title: string,
-  mode: string,
-  amount: number,
-}
-
-export interface GameDetails {
-  title: string, 
-  mode: string, 
-  amount: number,
-  adminUsername: string,
-  results: ItemInfos[]
-}
-
-interface GameReceivedDetails {
-  title: string, 
-  mode: string, 
-  amount: number,
-  adminUsername: string,
-  results: Result[]
-}
-
-interface Result {
-  username: string,
-  avatar: string,
-  amount: number
-}
-
-export interface GameWithoutResults {
-  title: string, 
-  mode: string, 
-  amount: number,
-  adminUsername: string,
-}
+import { CreateGame } from "./models/CreateGame";
+import { GameDetails } from "./models/GameDetails";
+import { GameReceivedDetails } from "./models/GameReceivedDetails";
+import { GameShort } from "./models/GameShort";
+import { GameWithoutResults } from "./models/GameWithoutResults";
+import { ItemInfos } from "./models/ItemInfos";
 
 export async function getAllGames() {
   try {     
@@ -161,27 +117,5 @@ export async function createGame(game: CreateGame) {
 
     } catch (error) {
       console.error('Error creating a game:', error);
-    }
-}
-
-export async function updateResults(gameId:string, guestAccountUsernames: string[], lobbyId: string) {
-  try {     
-      const response = await fetch('http://localhost:3000/games/' + gameId, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + getAccessToken()
-        },
-        body: JSON.stringify({guestAccountUsernames, lobbyId})
-      });
-
-      if(response.status != 204) {
-        console.error(response)
-      }
-      
-      await deleteLobby(lobbyId);
-
-    } catch (error) {
-      console.error('Error getting game results:', error);
     }
 }

@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {Box, Button, CircularProgress} from '@mui/material';
 import { Link} from 'react-router-dom';
 import './PrevGamesPage.css'
-import { ItemInfos, getAllGames } from '../../logic/game-service';
+import { getAllGames } from '../../logic/game-service';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GamesList from '../../shared/gameList/GamesList';
+import { ItemInfos } from '../../logic/models/ItemInfos';
 
 
 const PrevGamesPage= () => {

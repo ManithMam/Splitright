@@ -1,8 +1,8 @@
 import React from 'react'
 import { ListItem, ListItemButton, ListItemText,} from '@mui/material';
-import {ItemInfos} from "../../../logic/game-service";
 import { Link } from 'react-router-dom';
 import './GameListItem.css';
+import { ItemInfos } from '../../../logic/models/ItemInfos';
 
 interface GameListItemProps {
   infos: ItemInfos | undefined;

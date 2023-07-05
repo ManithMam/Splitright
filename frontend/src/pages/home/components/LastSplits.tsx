@@ -1,8 +1,9 @@
-import {getAllGames, ItemInfos} from "../../../logic/game-service";
+import { getAllGames } from "../../../logic/game-service";
 import { useEffect, useState } from 'react';
 import GamesList from '../../../shared/gameList/GamesList';
 import { CircularProgress } from "@mui/material";
 import { Box } from "@mui/system";
+import { ItemInfos } from "../../../logic/models/ItemInfos";
 
 const LastSplits = () => {
   const [games, setGames] = useState<ItemInfos[]>([]);

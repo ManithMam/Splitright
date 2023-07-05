@@ -111,7 +111,6 @@ export class GameService {
                 adminUsername: adminUsername,
                 results: returnResults
             }
-
             return returnGame;
         }
 
@@ -128,16 +127,13 @@ export class GameService {
         }
         this.logger.debug("Game is found");
 
-        // add admin to the list of account
-        let allAccountIds = []
-        for (let username of updateGameDto.guestAccountUsernames) {
-            let account = await this.accountService.getAccountByUsername(username);
-            allAccountIds.push(account._id.toString())
-        }
-        allAccountIds.push(accountId)
+        // add game admin to the accounts for which a result will be generaed
+        let allAccounts = updateGameDto.guestAccountIds;
+        allAccounts.push(accountId);
         
         // get results
-        const results: Result[] = this.generateResults(existingGame.amount, existingGame.mode, allAccountIds)
+        const results: Result[] = this.generateResults(existingGame.amount, existingGame.mode, allAccounts)
+        this.logger.debug("Game rsults are generated");
 
         // update game
         let updatedGame = {
@@ -147,7 +143,7 @@ export class GameService {
         this.logger.debug("Game is updated");
 
         // update participaints accounts adding the game to heir games lists
-        for (let accountId of allAccountIds) {
+        for (let accountId of updateGameDto.guestAccountIds) {
             await this.accountService.update(accountId, {gameId: gameId})
         }
         this.logger.debug("Game is added to participaints accounts");
@@ -225,7 +221,7 @@ export class GameService {
 
         if (!existingGame) {
             this.logger.debug('Game not found')
-            throw new HttpException('Game not found be', HttpStatus.NOT_FOUND)
+            throw new HttpException('Game not found', HttpStatus.NOT_FOUND)
         }
 
         return existingGame;

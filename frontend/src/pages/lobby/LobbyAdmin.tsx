@@ -1,99 +1,90 @@
 import React, { useState, useEffect } from "react";
 import "./Lobby.css";
-import { Avatar, Button, CircularProgress, ListItemAvatar, Snackbar, SnackbarContent, Typography } from "@mui/material";
+import { Avatar, Button, ListItemAvatar, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate, useParams } from "react-router-dom";
-import { getLobby, updateLobby,  Lobby, exitLobby } from "../../logic/lobby-service";
-import { removeStringFromArray } from "../../logic/utils";
-import { GameWithoutResults, getGameForLobby, updateResults } from "../../logic/game-service";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CodeBtn from "../../shared/gameInfoBox/CodeBtn";
+import { Lobby } from "../../logic/models/Lobby";
+import { GameWithoutResults } from "../../logic/models/GameWithoutResults"; 
+import { getGameForLobby } from "../../logic/game-service";
 import GameInfoBox from "../../shared/gameInfoBox/GameInfoBox";
+import { Socket, io } from "socket.io-client";
+import { getAccessToken } from "../../logic/auth-service";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 const LobbyPage = () => {
   const navigate = useNavigate();
-  const { lobbyId } = useParams();
-  const [lobby, setLobby] = useState<Lobby>();
+  const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
+
+  const { gameId } = useParams();
+  const [lobbyInfo, setLobbyInfo] = useState<Lobby>();
   const [game, setGame] = useState<GameWithoutResults>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
+    const token = getAccessToken();
+
+    const newSocket = io('http://localhost:3000/lobbies', {
+        transportOptions: {
+        polling: {
+            extraHeaders: {
+            'access_token': token,
+            },
+        },
+        },
+    });
+
+    setSocket(newSocket);
+
+    newSocket.on('connect', () => {
+      console.log('Connected to the WebSocket server');
+    });
 
     const fetchData = async () => {
       try {
-        if (lobbyId) {
-          const lobby = await getLobby(lobbyId);
-          const game = await getGameForLobby(lobby.gameId)
-          if (lobby && game) {
-            setLobby(lobby);
-            setGame(game);
-          }
-        }
+        const result = await getGameForLobby(gameId!);
+        setGame(result);
       } catch (error) {
-        console.error("Error fetching last splits:", error);
-      } finally {
-        setIsLoading(false);
+        console.error('Error fetching game data:', error);
       }
     };
 
     fetchData();
 
-    const intervalId = setInterval(fetchData, 2000); // fetch every 2 seconds
+    newSocket.emit('createLobby', { gameId: gameId });
+
+    newSocket.on('lobbyInfo', (data) => {
+
+      if(!data.code) {
+        navigate("/gameResults/" + data.gameId)
+      }
+
+      setLobbyInfo(data);
+    });
 
     return () => {
-      clearInterval(intervalId); // clean interval on component unmount
+      newSocket.disconnect();
     };
-  }, [lobbyId]);
+  }, [gameId]);
 
-  if (isLoading) {
-    return <Box sx={{ display: 'flex'}}> <CircularProgress /> </Box>;
-  }
-
-  const removeUser = async (username: string) => {
-    if (lobby && lobbyId && lobby.guestAccounts) {
-      const usernames = lobby.guestAccounts.map((guestAccount) => guestAccount.username);
-      const newGuestUsernamesList = removeStringFromArray(usernames, username);
-      await updateLobby(lobbyId, newGuestUsernamesList);
-    }
+  const closeLobby = () => {
+    socket!.emit('closeLobby');
   };
 
-  const handleCancel = async () => {
-    if (lobbyId) {
-      await exitLobby(lobbyId);
-      navigate("/home");
-    }
+  const kickUserOut = (guestUsername: string) => {
+    socket!.emit('kickUserOut', guestUsername);
   };
 
-
-  const handleStart = () => {
-    if (lobby && lobbyId && lobby.guestAccounts && lobby.gameId) {
-      const usernames = lobby.guestAccounts.map((guestAccount) => guestAccount.username);
-      updateResults(lobby.gameId, usernames, lobbyId);
-      navigate("/gameResults/" + lobby.gameId);
-    }
-  };
-
-  const copyToClipboard = () => {
-    if(lobby && lobby?.code) {
-      navigator.clipboard.writeText(lobby?.code)
-      .then(() => {
-        setOpen(true);
-      })
-      .catch((error) => {
-        console.error('Failed to copy value to clipboard:', error);
-      });
-    }
-    
+  const handleDisconnect = () => {
+    socket!.disconnect();
+    navigate("/home")
   };
 
   return (
     <div className="PageContainer">
-      <GameInfoBox game={game} code={lobby?.code} />
+      <GameInfoBox game={game} code={lobbyInfo?.code} />
 
       <Box className="Box" sx={{ bgcolor: "primary.light" }}>
         <Typography variant="h5" gutterBottom
@@ -105,8 +96,8 @@ const LobbyPage = () => {
           Guests
         </Typography>
         <List>
-        {lobby?.guestAccounts?.length ? (
-          lobby.guestAccounts.map((account, index) => (
+        {lobbyInfo?.guestAccounts?.length ? (
+          lobbyInfo.guestAccounts.map((account, index) => (
             <ListItem
               key={index}
               style={{ display: "flex", justifyContent: "space-around" }}
@@ -115,7 +106,7 @@ const LobbyPage = () => {
                 <Avatar src={"http://localhost:3000/files/" + account.avatar} />
               </ListItemAvatar>
               <ListItemText primary={account.username} />
-              <Button onClick={() => removeUser(account.username)}>
+              <Button onClick={() => kickUserOut(account.username)}>
                 <DeleteIcon sx={{ color: "primary.dark" }} />
               </Button>
             </ListItem>
@@ -129,10 +120,10 @@ const LobbyPage = () => {
       </Box>
 
       <div className="BtnGroup">
-        <Button variant="outlined" onClick={handleCancel} className="SecondaryBtn Btn">
+        <Button variant="outlined" onClick={handleDisconnect} className="SecondaryBtn Btn">
             Cancel
         </Button>
-        <Button onClick={handleStart} className="MainBtn Btn">
+        <Button onClick={closeLobby} className="MainBtn Btn">
           Start
         </Button>
       </div>
