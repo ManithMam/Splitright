@@ -1,0 +1,91 @@
+variables:
+    MONGOMS_VERSION: 4.2.8
+
+stages:          
+  - setup
+  - unit_test
+  - e2e_test    
+
+setup-backend:      
+  stage: setup
+  image: node:alpine
+  script:
+    - echo "Install all dependencies in backend..."     
+    - cd backend    
+    - npm ci --legacy-peer-deps    
+    - echo "Installed all dependencies in backend."      
+    - echo "Backend setup complete."    
+  artifacts:
+    paths:
+      - "backend/node_modules"
+    when: on_success
+    expire_in: 1h
+  only:
+      - main
+
+setup-frontend:
+  stage: setup
+  image: node:alpine
+  script:
+    - echo "Install all dependencies in frontend..." 
+    - cd frontend   
+    - npm ci
+    - echo "Installed all dependencies in frontend" 
+  artifacts:
+    paths:
+      - "frontend/node_modules"
+    when: on_success
+    expire_in: 1h
+  only:
+      - main
+ 
+
+unit-test-job-backend:     
+  stage: unit_test 
+  image: node:latest    
+  script:
+    - echo "Backend unit-tests starting."       
+    - cd backend        
+    - npm ci --legacy-peer-deps    
+    - wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb    
+    - dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+    - corepack enable   
+    - npm run test
+  only:
+      - main
+
+e2e-test-job-backend:
+    image: node:latest
+    stage: e2e_test
+    services:
+      - mongo:4.2.8
+    variables:
+      MONGO_URI_DOCKER: mongodb://mongo/splitright     
+    script:
+        - echo "Backend e2e tests starting."
+        - cd backend
+        - npm ci --legacy-peer-deps 
+        - wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb    
+        - dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+        - corepack enable
+        - npm run test:e2e   
+    only:
+        - main
+
+unit-test-job-frontend:
+    stage: unit_test
+    script:
+        - echo "Frontend unit-tests starting."
+        - cd frontend
+        - echo "To be implemented"
+    only:
+        - main
+
+e2e-test-job-frontend:
+    stage: e2e_test
+    script:
+        - echo "Frontend e2e test starting."
+        - cd frontend
+        - echo "To be implemented"
+    only:
+        - main
