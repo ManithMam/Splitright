@@ -20,8 +20,8 @@ setup-backend:
       - "backend/node_modules"
     when: on_success
     expire_in: 1h
-  only:
-      - main
+  #only:
+      #- main
 
 setup-frontend:
   stage: setup
@@ -36,8 +36,8 @@ setup-frontend:
       - "frontend/node_modules"
     when: on_success
     expire_in: 1h
-  only:
-      - main
+  #only:
+      #- main
  
 
 unit-test-job-backend:     
@@ -51,8 +51,8 @@ unit-test-job-backend:
     - dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
     - corepack enable   
     - npm run test
-  only:
-      - main
+  #only:
+      #- main
 
 e2e-test-job-backend:
     image: node:latest
@@ -69,15 +69,15 @@ e2e-test-job-backend:
         - dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
         - corepack enable
         - npm run test:e2e   
-    only:
-        - main
+    #only:
+       # - main
 
 unit-test-job-frontend:
     stage: unit_test
     script:
         - echo "Frontend unit-tests starting."
         - cd frontend
-        - echo "To be implemented"
+        - echo "npm test"
     only:
         - main
 
