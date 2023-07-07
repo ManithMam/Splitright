@@ -20,7 +20,7 @@ import { HttpExceptionFilter } from './exceptions/http-exception.filter';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory:async (configService:ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI_DOCKER')
+        uri: configService.get<string>('database.uri')
       }),
     }),
     ConfigModule.forRoot({
