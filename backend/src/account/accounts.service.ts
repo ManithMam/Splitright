@@ -59,17 +59,7 @@ export class AccountService {
             throw new NotFoundException("Account not found by id");
         }
         
-    }   
-
-    async getAccountByUsername(username: string) {
-        const existingAccount = await this.accountModel.findOne({username: username}).exec()
-
-        if(!existingAccount) {
-            throw new NotFoundException("Account not found. Wrong id.")
-        }
-
-        return existingAccount;
-    }
+    }     
 
     async insertOne(account: AccountDto): Promise<ReturnAccountDtoNoPassword>{        
         try{
