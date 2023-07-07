@@ -5,11 +5,11 @@
 | Full name | Student short | Matriculation number
 | ------ | ------ | ------ |
 | Aleksandra Gidionova | ag186 |43365|
-| Antti-Pekka Kuivalainen | ak366 | 12345 |
-| Arda Uslu | au023 | 12345 |
-| Isaac Morales | im050 | 12345 |
-| Manith Mam | mm334 | 12345 |
-| Valentin Schiffner | vs116 | 12345 |
+| Antti-Pekka Kuivalainen | ak366 | 5010497 |
+| Arda Uslu | au023 | 5010615 |
+| Isaac Morales | im050 | 44904 |
+| Manith Mam | mm334 | 43361 |
+| Valentin Schiffner | vs116 | 43327 |
 
 
 ## Short project abstract (only one or two sentences)
@@ -54,7 +54,7 @@ POST http://localhost:3000/populateDb (no body, no token)
 ### Backend
 
 - **Unit Tests:**
-  - for **accounts.service.ts** and **game.service.ts**
+  - for **accounts.service.ts** (didn't test the controller since it only calls the service)
   - `npm test -- --coverage`
 
 - **e2e**: 
