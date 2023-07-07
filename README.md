@@ -46,7 +46,7 @@ POST http://localhost:3000/populateDb (no body, no token)
 
 - **Component & Unit test**: 
   - **GameInfoBox.tsx** and **Login.tsx**
-  - `npm test -- --coverage`
+  - `npx jest --coverage`
 - **e2e**: 
   - for **login and logout**
   - `npx cypress open`
