@@ -22,7 +22,7 @@ setup-backend:
     when: on_success
     expire_in: 1h
   only:
-      - main
+      - main  
 
 setup-frontend:
   stage: setup
