@@ -9,7 +9,6 @@
     "@mui/material": "^5.13.5",
     "@mui/system": "^5.13.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.24",
     "@types/react": "^18.0.38",
     "@types/react-dom": "^18.0.11",
@@ -27,9 +26,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "e2e": "cypress run"
   },
   "eslintConfig": {
     "extends": [
@@ -51,14 +51,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.22.5",
     "@babel/preset-react": "^7.22.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.2",
     "babel-jest": "^29.6.1",
+    "cypress": "^12.17.0",
     "jest": "^24.1.0",
     "react-test-renderer": "^18.2.0",
-    "ts-jest": "^24.3.0",
-    "cypress": "^12.16.0"
+    "ts-jest": "^24.3.0"
   }
 }

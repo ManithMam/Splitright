@@ -3,6 +3,7 @@ variables:
 
 stages:          
   - setup
+  - build
   - unit_test
   - e2e_test    
 
@@ -29,22 +30,35 @@ setup-frontend:
   script:
     - echo "Install all dependencies in frontend..." 
     - cd frontend   
-    - npm ci
+    - npm ci   
     - echo "Installed all dependencies in frontend" 
   artifacts:
-    paths:
-      - "frontend/node_modules"
+    paths:     
+      - "frontend/node_modules"      
     when: on_success
     expire_in: 1h
   only:
       - main
+
+build-frontend:
+  stage: build
+  image: node:alpine
+  script:
+    - cd frontend
+    - npm run build
+  artifacts:   
+    paths:
+      - "frontend/build"
+    when: on_success
+    expire_in: 1h
+  only:
+    - main
  
 
 unit-test-job-backend:     
   stage: unit_test 
   image: node:latest    
-  script:
-    - echo "Backend unit-tests starting."       
+  script:        
     - cd backend        
     - npm ci --legacy-peer-deps    
     - wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb    
@@ -61,8 +75,7 @@ e2e-test-job-backend:
       - mongo:4.2.8
     variables:
       MONGO_URI_DOCKER: mongodb://mongo/splitright     
-    script:
-        - echo "Backend e2e tests starting."
+    script:       
         - cd backend
         - npm ci --legacy-peer-deps 
         - wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb    
@@ -73,19 +86,25 @@ e2e-test-job-backend:
        - main
 
 unit-test-job-frontend:
+    image: node:latest
     stage: unit_test
     script:
         - echo "Frontend unit-tests starting."
         - cd frontend
-        - echo "npm test"
+        - npm test
     only:
         - main
 
 e2e-test-job-frontend:
+    image: cypress/base:latest
     stage: e2e_test
-    script:
-        - echo "Frontend e2e test starting."
-        - cd frontend
-        - echo "To be implemented"
+    script:        
+        - cd frontend    
+        - npm ci      
+        - npm install -g serve
+        - npm install -g wait-on
+        - serve -s build &
+        - wait-on http://localhost:3000
+        - npm run e2e
     only:
         - main
