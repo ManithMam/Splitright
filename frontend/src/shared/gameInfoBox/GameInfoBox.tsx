@@ -16,7 +16,7 @@ interface GameInfoBoxProps {
 const GameInfoBox: React.FC<GameInfoBoxProps> = ({ game, code }) => {
 
   return (
-      <Box className="Box" sx={{ width: "100%", bgcolor: "primary.light", color: "primary.dark", display: "flex", flexDirection: "column", alignItems: "center",}}>
+      <Box className="Box GameBox">
         
         <Typography variant="h4" 
           sx={{

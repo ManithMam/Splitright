@@ -3,6 +3,8 @@ import { render } from "@testing-library/react";
 import '@testing-library/jest-dom/extend-expect';
 import GameInfoBox from "./GameInfoBox";
 
+jest.mock('./GameInfoBox.css', () => ({}));
+
 describe("GameInfoBox", () => {
   const game = {
     title: "Test Game",
