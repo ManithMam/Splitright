@@ -3,33 +3,17 @@ import { useParams } from 'react-router';
 import { getGameById } from "../../logic/game-service";
 import {Typography, Box, List, ListItem, ListItemText, Button, CircularProgress } from '@mui/material';
 import './GameResultsPage.css';
+import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import GameInfoBox from '../../shared/gameInfoBox/GameInfoBox';
 import GameListItem from '../../shared/gameList/gameListItem/GameListItem';
+import LoadBox from "../../shared/LoadBox/LoadBox"
 import { GameDetails } from '../../logic/models/GameDetails';
 
 const GameResultsPage = () => {
   const { id } = useParams();
   const [gameDetails, setGameDetails] = useState<GameDetails>();
   const [isLoading, setIsLoading] = useState(true);
-
-  let splitMethodClass = '';
-  if (gameDetails?.mode === 'Communist') {
-    splitMethodClass = 'communist-box';
-  } else if (gameDetails?.mode === 'Lucky') {
-    splitMethodClass = 'lucky-box';
-  } else if (gameDetails?.mode === 'Random') {
-    splitMethodClass = 'random-box';
-  }
-
-  let titleClass = '';
-  if (gameDetails?.mode === 'Communist') {
-    titleClass = 'communist-title';
-  } else if (gameDetails?.mode === 'Lucky') {
-    titleClass = 'lucky-title';
-  } else if (gameDetails?.mode === 'Random') {
-    titleClass = 'random-title';
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,17 +34,29 @@ const GameResultsPage = () => {
     fetchData();
   }, []);
 
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/home');
+  };
+
+  window.onpopstate = () => {
+    navigate("/home");
+  }
+
   if (isLoading) {
-    return <Box sx={{ display: 'flex'}}> <CircularProgress /> </Box>;
+    <LoadBox></LoadBox>
   }
 
   return (
     <div className='PageContainer'>
       <GameInfoBox game={gameDetails} code={undefined} />
 
-      <Box className='Box' sx={{bgcolor:'primary.light'}}>
+      <Box className="Box">
 
-        <Typography variant="h5" gutterBottom sx={{bgcolor:'primary.dark', color:'primary.light', borderRadius: '26px'}}>
+        <Typography variant="h5" 
+        gutterBottom 
+        className="Typography"
+        >
           Results
         </Typography>
 
@@ -76,9 +72,7 @@ const GameResultsPage = () => {
         </List>
       </Box>
 
-      <Button component={Link} to="/home" className='Btn MainBtn' sx={{width: "100%"}}>
-          Back to Homepage
-      </Button>
+      <Button className="MainBtn" onClick={handleClick}>Back to Homepage</Button>
     </div>
   );
 };

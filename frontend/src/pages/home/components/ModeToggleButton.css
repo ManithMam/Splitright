@@ -1,8 +1,6 @@
-.Toggle-Btn-Info-Group {
+.DialogItem {
     display: flex;
-    flex-direction: row;
-    gap: 5px;
-    color: gray;
+    width: 100%;
 }
 
 .Toggle-Btn-Info {
@@ -10,10 +8,36 @@
 }
 
 .ToggleBtnGroup {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     width: 100%;
+    overflow-x: auto;
 }
 
 .ToggleBtn {
+    flex: 1;
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+    overflow: hidden;
     flex-grow: 1;
     flex-shrink: 1;
+}
+
+.ToggleBtnInfoGroup {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--primary-color-dark);
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-top: 15px;
+}
+
+.InfoIcon {
+    margin-right: 15px;
+}
+
+.ModeInfo  {
+    width: 100%;
 }

@@ -3,7 +3,7 @@ import { LobbyService } from "./lobby.service";
 import { Server, Socket} from "socket.io";
 import { CreateLobbyDto } from "./dto/createLobby.dto";
 import { AuthService } from "../auth/auth.service";
-import { AccountService } from "../account/accounts.service";
+import { AccountService } from "../account/account.service";
 import { Logger, UseFilters} from "@nestjs/common";
 import { WsExceptionFilter } from "../exceptions/ws-exception.filter";
 

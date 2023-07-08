@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor, getByTitle } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import LoginPage from './LoginPage';
@@ -37,10 +37,6 @@ afterEach(() => {
   });
   afterAll(() => {
     server.close();
-    /*if (global && global.fetch) {
-      delete global.fetch;
-    }
-    global.fetch = undefined;*/
   });
 
 test('renders login form and submits values', async () => {
@@ -69,7 +65,7 @@ test('renders login form and submits values', async () => {
 
 test('shows error when username and password fields are left empty', async () => {
   const setIsLoggendIn = jest.fn();
-  const { getByLabelText, getByText, findByText } = render(
+  const { getByText, findByText } = render(
     <Router>
       <LoginPage setIsLoggendIn={setIsLoggendIn} />
     </Router>

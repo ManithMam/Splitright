@@ -1,0 +1,11 @@
+#button-copy {
+    width: 100%;
+    font-size: 20px;
+    color: var(--primary-color-dark);
+    text-transform: none;
+  }
+  
+.snackbar-content {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color-dark);
+  }

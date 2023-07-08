@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import GamesList from '../../../shared/gameList/GamesList';
 import { CircularProgress } from "@mui/material";
 import { Box } from "@mui/system";
+import LoadBox from "../../../shared/LoadBox/LoadBox";
+import './LastSplits.css';
 import { ItemInfos } from "../../../logic/models/ItemInfos";
 
 const LastSplits = () => {
@@ -27,12 +29,11 @@ const LastSplits = () => {
   }, []);
 
   if (isLoading) {
-    return <Box sx={{ display: 'flex'}}> <CircularProgress /> </Box>;;
+    return <LoadBox></LoadBox>;
   }
 
-
   return (
-    <GamesList games={games} amount={5} />
+    <GamesList games={games} amount={5}/>
   );
 };
 

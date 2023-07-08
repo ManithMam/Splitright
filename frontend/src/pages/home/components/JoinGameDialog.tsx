@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, TextField } from '@mui/material';
-import './CreateGameDialog.css';
+import './Dialog.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,13 +43,13 @@ export default function JoinGameDialog() {
 
   return (
     <div>
-      <Button className='MainBtn Btn' onClick={handleClickOpen}>
+      <Button className='MainBtn' onClick={handleClickOpen}>
         Join
       </Button>
 
       <Dialog open={open} onClose={handleClose}>
 
-        <DialogTitle className='DialogTitle' sx={{ textAlign: 'center' }}>Join Split</DialogTitle>
+        <DialogTitle className='DialogTitle'>Join Split</DialogTitle>
 
         <DialogContent className='DialogContent'>
 
@@ -63,8 +63,8 @@ export default function JoinGameDialog() {
           />
           
           <div className='Dialog-Item DialogButtonGroup'>
-            <Button variant="outlined" onClick={handleClose} className='SecondaryBtn Btn'>Cancel</Button>
-            <Button variant="contained" onClick={handleSubmit} className='MainBtn Btn'>Join</Button>
+            <Button variant="outlined" onClick={handleClose} className='SecondaryBtn'>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit} className='MainBtn'>Join</Button>
           </div>
         </DialogContent>
       </Dialog>

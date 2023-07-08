@@ -11,6 +11,8 @@ import { Lobby } from "../../logic/models/Lobby";
 import { GameWithoutResults } from "../../logic/models/GameWithoutResults"; 
 import { getGameForLobby } from "../../logic/game-service";
 import GameInfoBox from "../../shared/gameInfoBox/GameInfoBox";
+import "../../App.css"
+import LoadBox from "../../shared/LoadBox/LoadBox";
 import { Socket, io } from "socket.io-client";
 import { getAccessToken } from "../../logic/auth-service";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -26,7 +28,7 @@ const LobbyPage = () => {
   useEffect(() => {
     const token = getAccessToken();
 
-    const newSocket = io('http://localhost:3000/lobbies', {
+    const newSocket = io(process.env.REACT_APP_BACKEND_URL + '/lobbies', {
         transportOptions: {
         polling: {
             extraHeaders: {
@@ -86,24 +88,19 @@ const LobbyPage = () => {
     <div className="PageContainer">
       <GameInfoBox game={game} code={lobbyInfo?.code} />
 
-      <Box className="Box" sx={{ bgcolor: "primary.light" }}>
-        <Typography variant="h5" gutterBottom
-          sx={{
-            bgcolor: "primary.dark",
-            color: "primary.light",
-            borderRadius: "26px",
-          }}>
+      <Box className="Box">
+        <Typography variant="h5" gutterBottom className="Typography">
           Guests
         </Typography>
         <List>
         {lobbyInfo?.guestAccounts?.length ? (
           lobbyInfo.guestAccounts.map((account, index) => (
             <ListItem
+              className="Item"
               key={index}
-              style={{ display: "flex", justifyContent: "space-around" }}
             >
               <ListItemAvatar>
-                <Avatar src={"http://localhost:3000/files/" + account.avatar} />
+                <Avatar src={process.env.REACT_APP_BACKEND_URL + "/files/" + account.avatar} />
               </ListItemAvatar>
               <ListItemText primary={account.username} />
               <Button onClick={() => kickUserOut(account.username)}>
@@ -113,7 +110,7 @@ const LobbyPage = () => {
           ))
         ) : (
           <ListItem>
-            <ListItemText primary="No guests yet" sx={{textAlign: "center"}} />
+            <ListItemText primary="No guests yet" className="NoGuests"/>
           </ListItem>
         )}
         </List>

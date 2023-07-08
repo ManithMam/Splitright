@@ -8,7 +8,7 @@ import { ItemInfos } from "./models/ItemInfos";
 
 export async function getAllGames() {
   try {     
-    const response = await fetch('http://localhost:3000/games', {
+    const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/games', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export async function getAllGames() {
 
 export async function getGameById(id: string) {
   try {     
-      const response = await fetch('http://localhost:3000/games/' + id, {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/games/' + id, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export async function getGameById(id: string) {
 
 export async function getGameForLobby(id: string) {
   try {     
-      const response = await fetch('http://localhost:3000/games/lobby/' + id, {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/games/lobby/' + id, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export async function getGameForLobby(id: string) {
 
 export async function createGame(game: CreateGame) {
   try {     
-      const response = await fetch('http://localhost:3000/games', {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/games', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

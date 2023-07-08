@@ -2,7 +2,7 @@ import {getAccessToken} from "./auth-service";
 
 export async function getAccountInfo() {
     try {
-        const response = await fetch('http://localhost:3000/accounts/me', {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/accounts/me', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

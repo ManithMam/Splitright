@@ -52,7 +52,7 @@ export class AccountService {
         }
         catch(err){
             this.logger.error("Invalid MongoID."); 
-            throw new NotFoundException("Account not found by id.");
+            throw new NotFoundException("Account not found by id");
         }
         
     }     
@@ -100,7 +100,7 @@ export class AccountService {
         }     
         catch{
             this.logger.error("Invalid MongoID.");            
-            throw new NotFoundException("Account not found by id.");  
+            throw new NotFoundException("Account not found by id");  
         }        
     }   
 

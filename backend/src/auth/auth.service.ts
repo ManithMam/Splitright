@@ -1,5 +1,5 @@
 import { BadRequestException, HttpCode, Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { AccountService } from '../account/accounts.service';
+import { AccountService } from '../account/account.service';
 import { AccountDto } from '../account/dto/accountDTO';
 import { Account } from '../account/account.schema';
 import { JwtService } from '@nestjs/jwt';

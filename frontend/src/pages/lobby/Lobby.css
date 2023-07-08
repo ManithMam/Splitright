@@ -1,0 +1,17 @@
+.Item {
+    display: flex;
+    justify-content: space-around;
+}
+
+.DeleteIcon {
+    color: var(--primary-color-dark);
+}
+
+.NoGuests {
+    text-align: center;
+}
+
+.Waiting {
+    color: var(--primary-color-dark);
+    margin-top: "20px";
+}

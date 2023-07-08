@@ -7,6 +7,7 @@
 }
 
 .InputArea {
+    color: var(--primary-color-dark);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,10 +15,31 @@
     gap: 10px;
 }
 
+.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+   border-color: var(--primary-color-light);
+}
+
+.MuiInputLabel-outlined {
+  color: var(--primary-color-light);
+}
+ 
+.MuiFormHelperText-root {
+   color: var(--primary-color-light);
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--primary-color-main) !important;
+}
+  
+.MuiInputLabel-outlined.Mui-focused {
+    color: var(--primary-color-main) !important;
+}
+
 .Img {
     padding-top: 25px;
     padding-bottom: 30px;
-    width: 200px; 
+    width: 100%;
+    max-width: 200px;
 }
 
 .ErrorText {
