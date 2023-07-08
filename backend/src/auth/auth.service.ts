@@ -14,22 +14,22 @@ export class AuthService {
     private readonly logger = new Logger(AuthService.name);
 
     async validateAccount(accountToFind: AccountDto): Promise<Account> {
-        const account = await this.accountsService.getAccountByUsername(accountToFind)
+        const account = await this.accountsService.getAccountByUsername(accountToFind);
        
-        const isSamePassword = await bcrypt.compare(accountToFind.password, account.password)
+        const isSamePassword = await bcrypt.compare(accountToFind.password, account.password);
 
         if(!isSamePassword){
-            throw new UnauthorizedException()
+            throw new UnauthorizedException();
         }
         else{
-            this.logger.debug("Account is valid")
+            this.logger.log("Account is valid.");
         }     
        
         return account;        
     }
 
     async login(accountDto: AccountDto) {     
-        const account = await this.accountsService.getAccountByUsername(accountDto)
+        const account = await this.accountsService.getAccountByUsername(accountDto);
         const token = await this.getToken(account.username, account.id);
 
         return {
@@ -41,10 +41,11 @@ export class AuthService {
         const newAccount = await this.accountsService.insertOne(account);
         
         if (newAccount) {
-            this.logger.debug("New account registered")
+            this.logger.log("New account registered.");
             return HttpCode(201);
         }
         else {
+            this.logger.error("Could not create new account.");
             return new BadRequestException();
         }
     }
