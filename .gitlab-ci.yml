@@ -91,7 +91,7 @@ unit-test-job-frontend:
     script:
         - echo "Frontend unit-tests starting."
         - cd frontend
-        - npm test
+        - npx jest
     only:
         - main
 

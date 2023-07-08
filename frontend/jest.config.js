@@ -7,7 +7,6 @@ module.exports = {
   coverageReporters: ['lcov', 'text'],
   collectCoverageFrom: [
     'src/**/GameInfoBox.tsx',
-    '!src/shared/gameInfoBox/CodeBtn.tsx', // exclude CodeBtn.tsx
-    '!src/shared/gameInfoBox/GameInfoBox.css', // exclude GameInfoBox.css
+    'src/**/LoginPage.tsx',
   ],
 };
