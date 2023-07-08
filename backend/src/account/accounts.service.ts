@@ -16,11 +16,11 @@ export class AccountService {
     private readonly logger = new Logger(AccountService.name);
 
     async getAccountByUsername(accountToFind: AccountUsernameDto): Promise<ReturnAccountDto> {
-        try{         
+        try{
             const account = await this.accountModel.findOne({username: accountToFind.username}).exec();
 
             if(account){
-                this.logger.log("Account found by username.");
+                this.logger.log("Account found by username");
             }            
 
             return {      
@@ -46,7 +46,7 @@ export class AccountService {
                 games: existingAccount.games, 
                 avatar: existingAccount.avatar,
                 id: existingAccount.id
-            }
+            }        
 
             return returnAccount;
         }
@@ -61,9 +61,11 @@ export class AccountService {
         this.logger.log("creating new account...");   
 
         try{
+            this.logger.log("Creating new account...");
+
             const newAccount = await this.accountModel.create(account);
 
-            this.logger.log("New account created.");
+            this.logger.log("New account created");
 
             return {            
                 username: newAccount.username,                
@@ -81,9 +83,12 @@ export class AccountService {
         this.logger.log("Updating games...");
 
         try{
+            this.logger.log("Updating games from account...");
+
             const newAccount = await this.accountModel.findOneAndUpdate({_id: accountId}, 
                 {$push: {games: updateAccountDto.gameId}}, {new: true});
     
+            this.logger.log("New game added to account.");
             this.logger.log("New game added to account.");
     
             return {            
@@ -105,7 +110,7 @@ export class AccountService {
         //Validate mongo id coming from params
         try{
             await this.accountModel.findById(updateDto.id);
-            this.logger.log("Valid Id.")
+            this.logger.log("Valid Id")
             
         }
         catch(err){
@@ -114,11 +119,13 @@ export class AccountService {
         }
 
         try{
+            this.logger.log("Updating username...");
+
             const newAccount = (await this.accountModel.findByIdAndUpdate(
                 updateDto.id,
                 { $set: { username: updateDto.newName } }, { new: true }))              
             
-            this.logger.log("Updated account username.");
+            this.logger.log("Updated account username");
      
             return {            
                 username: newAccount.username,                
@@ -133,14 +140,15 @@ export class AccountService {
         }         
     }
     
-    async updatePassword(updateDto: UpdateAccountPasswordDto): Promise<ReturnAccountDto>{      
-        this.logger.log("Updating password...");
-
+    async updatePassword(updateDto: UpdateAccountPasswordDto): Promise<ReturnAccountDto>{        
         try{
+            this.logger.log("Updating account password...");
+
             const newAccount = await (await this.accountModel.findOneAndUpdate(
                 { _id: updateDto.id },
                 { $set: { password: updateDto.newPassword } }, { new: true })).save();     
     
+            this.logger.log("Updated account password");
             this.logger.log("Updated account password");
                        
             return {            
@@ -160,16 +168,17 @@ export class AccountService {
 
     async deleteById(accountId: string){
         try{
-            this.logger.log("Deleting account...");
+            this.logger.log('Deleting account...');
 
             const accountToDelete = await this.accountModel.findByIdAndDelete(accountId);
 
+            this.logger.log("Account deleted");
             this.logger.log("Account deleted");
 
             return(accountToDelete)
         }
         catch{
-            this.logger.error("Invalid MongoID")
+            this.logger.error("Invalid MongoID");
             throw new NotFoundException("Could not find account with that id.");
         }
         
