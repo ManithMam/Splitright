@@ -4,6 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import GameInfoBox from "./GameInfoBox";
 
 jest.mock('./GameInfoBox.css', () => ({}));
+jest.mock('./CodeBtn.css', () => ({}));
 
 describe("GameInfoBox", () => {
   const game = {
@@ -31,7 +32,7 @@ describe("GameInfoBox", () => {
   it("render game amount", () => {
     const { getByText } = render(<GameInfoBox game={game} code={code} />);
     const amountElement = getByText("Amount:");
-    const amountValueElement = getByText(game.amount.toString());
+    const amountValueElement = getByText("5.00 €");
     expect(amountElement).toBeInTheDocument();
     expect(amountValueElement).toBeInTheDocument();
   });

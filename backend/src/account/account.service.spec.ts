@@ -2,7 +2,7 @@ import { MongooseModule, getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { Account, AccountSchema } from "./account.schema";
 import { AccountModule } from "./account.module";
-import { AccountService } from "./accounts.service";
+import { AccountService } from "./account.service";
 import { AccountDto } from "./dto/accountDTO";
 import { ReturnAccountDto } from "./dto/returnAccountDTO";
 import { UpdateAccountGamesDto } from "./dto/updateAccountGames.dto";

@@ -50,6 +50,7 @@ describe('Accounts (e2e)', () => {
                     useFactory: async() => {
                         mongod = await MongoMemoryServer.create();
                         mongoUri = await mongod.getUri();
+                        console.log("mongoUri", mongoUri)
                         return {
                             uri: mongoUri
                         }

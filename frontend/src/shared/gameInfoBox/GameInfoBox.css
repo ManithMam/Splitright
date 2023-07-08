@@ -1,8 +1,21 @@
-.GameBox{
+.GameList {
+    display: flex; 
+    justify-content: center;
     width: 100%;
-    background-color: var(--primary-color-light);
-    color: var(--primary-color-dark);
-    display: flex;
+}
+
+.GameList .GameListItem {
     flex-direction: column;
-    align-items: center;
+    text-align: center;
+}
+
+.GameListItem .GameInfo {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.Title {
+    font-weight: bolder !important;
+    font-size: large !important;
 }

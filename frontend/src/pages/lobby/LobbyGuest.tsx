@@ -10,6 +10,8 @@ import { Lobby } from "../../logic/models/Lobby";
 import { GameWithoutResults } from "../../logic/models/GameWithoutResults"; 
 import { getGameForLobby } from "../../logic/game-service";
 import GameInfoBox from "../../shared/gameInfoBox/GameInfoBox";
+import LoadBox from "../../shared/LoadBox/LoadBox";
+import "../../App";
 import { getAccessToken } from "../../logic/auth-service";
 import { Socket, io } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
@@ -27,7 +29,7 @@ const LobbyGuest = () => {
   useEffect(() => {
     const token = getAccessToken();
 
-    const newSocket = io('http://localhost:3000/lobbies', {
+    const newSocket = io(process.env.REACT_APP_BACKEND_URL + '/lobbies', {
         transportOptions: {
         polling: {
             extraHeaders: {
@@ -92,15 +94,11 @@ const LobbyGuest = () => {
     <div className="PageContainer">
       <GameInfoBox game={game} code={lobbyInfo?.code} />
 
-      <Box className="Box" sx={{ bgcolor: "primary.light" }}>
+      <Box className="Box">
         <Typography
           variant="h5"
           gutterBottom
-          sx={{
-            bgcolor: "primary.dark",
-            color: "primary.light",
-            borderRadius: "26px",
-          }}
+          className="Typography"
         >
           Guests
         </Typography>
@@ -108,10 +106,10 @@ const LobbyGuest = () => {
           {lobbyInfo?.guestAccounts?.map((account, index) => (
             <ListItem
               key={index}
-              style={{ display: "flex", justifyContent: "space-around" }}
+              className="Item"
             >
               <ListItemAvatar>
-                <Avatar src={"http://localhost:3000/files/" + account.avatar} />
+                <Avatar src={process.env.REACT_APP_BACKEND_URL + "/files/" + account.avatar} />
               </ListItemAvatar>
               <ListItemText primary={account.username} />
             </ListItem>
@@ -125,7 +123,7 @@ const LobbyGuest = () => {
       </Button>
 
 
-      <Typography variant="h6" sx={{ marginTop: "20px" }}>
+      <Typography variant="h6" className="Waiting">
         {message}
         {periods}
       </Typography>

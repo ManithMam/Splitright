@@ -5,6 +5,7 @@
 }
 
 .Logout {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -17,15 +18,17 @@
 }
 
 .splitright-logo {
-    width: 200px;
-    height: auto
+    width: 100%;
+    max-width: 200px;
+    height: auto;
 }
 
 .PageContainer {
-    max-width: 700px;
-    min-width: 350px;
+    width: 90%;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 20px;
     margin-bottom: 50px;
@@ -34,27 +37,58 @@
 .BtnGroup {
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
     gap: 10px;
     width: 100%;
 }
 
-.Btn {
-    width: 100%
-}
-
 .MainBtn {
+    display: flex;
+    width: 100%;
     color: var(--primary-color-light) !important;
     background-color: var(--primary-color-dark) !important;
 }
+
 
 .MainBtn:hover {
     color: var(--primary-color-main) !important;
 }
 
 .SecondaryBtn {
+    width: 100%;
     background-color: var(--primary-color-light)!important;
     color: var(--primary-color-dark) !important;
     border-color: var(--primary-color-dark) !important;
     border-width: 1px !important;
 }
 
+.Typography {
+    background-color: var(--primary-color-dark);
+    color: var(--primary-color-light);
+    border-radius: 4px;
+    width: 100%;
+    overflow: hidden;
+    perspective: 1px;
+}    
+
+.Box {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--primary-color-light);
+    border-radius: 4px;
+}
+
+.Box .Typography {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.Box .List {
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+} 

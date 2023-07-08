@@ -1,6 +1,7 @@
 import { Info } from "@mui/icons-material";
 import { ToggleButtonGroup, ToggleButton, Typography } from "@mui/material";
 import React from "react";
+import './ModeToggleButton.css';
 
 interface ModeToggleButtonProps {
     mode: string;
@@ -28,7 +29,7 @@ function ModeToggleButton({ mode, onChange }: ModeToggleButtonProps) {
                 <ToggleButton color="secondary" value="Random" className='ToggleBtn'>Random</ToggleButton>
                 <ToggleButton color="success" value="Lucky" className='ToggleBtn'>Lucky One</ToggleButton>
             </ToggleButtonGroup>
-            <div className='Toggle-Btn-Info-Group'><Info></Info> <Typography>{modeInfo}</Typography></div>
+            <div className='ToggleBtnInfoGroup'><Info className="InfoIcon"/> <Typography className="ModeInfo">{modeInfo}</Typography></div>
         </div>
     );
 }

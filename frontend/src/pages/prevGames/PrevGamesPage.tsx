@@ -5,6 +5,8 @@ import './PrevGamesPage.css'
 import { getAllGames } from '../../logic/game-service';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GamesList from '../../shared/gameList/GamesList';
+import LoadBox from "../../shared/LoadBox/LoadBox";
+import "../../App.css"
 import { ItemInfos } from '../../logic/models/ItemInfos';
 
 
@@ -31,19 +33,18 @@ const PrevGamesPage= () => {
   }, []);
 
   if (isLoading) {
-    return <Box sx={{ display: 'flex'}}> <CircularProgress /> </Box>;;
+    return <LoadBox></LoadBox>;
   }
 
 
   return (
     <div className='PageContainer'>
-        
-      <Button component={Link} to="/home" startIcon={<ArrowBackIcon />} sx={{alignSelf: "start", position: "fixed", left: "20px", top: "10px"}}>
-        Home
+      <Button className="BackBtn" component={Link} to="/home" startIcon={<ArrowBackIcon />}>
+            Home
       </Button>
-
-      <GamesList games={games} amount={games.length} />
-
+      <div className="PageContainer">
+          <GamesList games={games} amount={games.length}/>
+      </div>
     </div>
   )
 }

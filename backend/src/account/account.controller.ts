@@ -1,5 +1,5 @@
 import {Controller, Request, Get, UseGuards, Post, Patch, Param, Delete, Body, UseFilters} from '@nestjs/common'
-import { AccountService } from './accounts.service';
+import { AccountService } from './account.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AccountDto } from './dto/accountDTO';

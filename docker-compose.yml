@@ -38,6 +38,8 @@ services:
       dockerfile: dockerfile
     ports:
       - 3001:3001
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:3000
     networks:
       - spliright-network 
     depends_on:
@@ -57,6 +59,8 @@ services:
       dockerfile: dockerfile
     ports:
       - 3002:3002
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:3000
     networks:
       - spliright-network 
     depends_on:
@@ -76,6 +80,8 @@ services:
       dockerfile: dockerfile
     ports:
       - 3003:3003
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:3000
     networks:
       - spliright-network 
     depends_on:

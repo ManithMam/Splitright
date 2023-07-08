@@ -1,1 +1,14 @@
+.BackBtn {
+    align-self:flex-start;
+    position: fixed !important;
+    left: 20px;
+    top: 10px
+}
 
+.FullScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }

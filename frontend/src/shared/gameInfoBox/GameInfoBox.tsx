@@ -16,34 +16,36 @@ interface GameInfoBoxProps {
 const GameInfoBox: React.FC<GameInfoBoxProps> = ({ game, code }) => {
 
   return (
-      <Box className="Box GameBox">
+      <Box className="Box">
         
-        <Typography variant="h4" 
-          sx={{
-            bgcolor: "primary.dark",
-            color: "primary.light",
-            borderRadius: "26px",
-            width: "100%"
-          }}
+        <Typography 
+        className = "Typography"
+        variant="h5"
         >
           {game?.title}
         </Typography>
-
-
-        <List style={{ display: "flex", justifyContent: "space-around" }}>
-          <ListItem style={{ flexDirection: "column" }}>
-            <ListItemText primary="Mode:" sx={{ marginBottom: "1px" }} />
-            <ListItemText primary={game?.mode} />
+        
+        <List className="GameList">
+          <ListItem className="GameListItem">
+            <div className="GameInfo">
+              <Typography className="Title">Mode:</Typography>
+              <ListItemText primary={game?.mode}/>
+            </div>
           </ListItem>
-          <ListItem style={{ flexDirection: "column" }}>
-            <ListItemText primary="Amount:" sx={{ marginBottom: "1px" }} />
-            <ListItemText primary={game?.amount} />
+          <ListItem className="GameListItem">
+            <div className="GameInfo">
+              <Typography className="Title">Amount:</Typography>
+              <ListItemText primary={`${game?.amount.toFixed(2)} €`} />
+            </div>
           </ListItem>
-          <ListItem style={{ flexDirection: "column" }}>
-            <ListItemText primary="Host:" sx={{ marginBottom: "1px" }} />
-            <ListItemText primary={game?.adminUsername} />
+          <ListItem className="GameListItem">
+            <div className="GameInfo">
+              <Typography className="Title">Host:</Typography>
+              <ListItemText primary={game?.adminUsername} />
+            </div>
           </ListItem>
         </List>
+
 
         <CodeBtn code={code} />
 

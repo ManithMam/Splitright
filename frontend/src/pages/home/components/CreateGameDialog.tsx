@@ -3,7 +3,8 @@ import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, TextField } from '@mui/material';
-import './CreateGameDialog.css';
+import './Dialog.css';
+import '../../../App.css';
 import { useState } from 'react';
 import {createGame} from "../../../logic/game-service";
 import { useNavigate } from 'react-router-dom';
@@ -65,13 +66,13 @@ export default function CreateGameDialog() {
 
   return (
     <div>
-      <Button className='MainBtn Btn' onClick={handleClickOpen}>
+      <Button className="MainBtn" onClick={handleClickOpen}>
         Create
       </Button>
 
       <Dialog open={open} onClose={handleClose}>
 
-        <DialogTitle className='DialogTitle' sx={{ textAlign: 'center' }}>Create Split</DialogTitle>
+        <DialogTitle className='DialogTitle'>Create Split</DialogTitle>
 
         <DialogContent className='DialogContent'>
 
@@ -84,7 +85,7 @@ export default function CreateGameDialog() {
             helperText={titleError && 'Title cannot be empty'}
           />
 
-          <ModeToggleButton mode={mode} onChange={handleModeChange} />
+          <ModeToggleButton mode={mode} onChange={handleModeChange}/>
 
           <TextField 
             className='Dialog-Item' 
@@ -96,8 +97,8 @@ export default function CreateGameDialog() {
           />
           
           <div className='Dialog-Item DialogButtonGroup'>
-            <Button variant="outlined" onClick={handleClose} className='SecondaryBtn Btn'>Cancel</Button>
-            <Button onClick={handleSubmit} className='MainBtn Btn'>Create</Button>
+            <Button variant="outlined" onClick={handleClose} className='SecondaryBtn'>Cancel</Button>
+            <Button onClick={handleSubmit} className='MainBtn'>Create</Button>
           </div>
         </DialogContent>
       </Dialog>

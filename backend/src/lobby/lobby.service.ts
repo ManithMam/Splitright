@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Lobby } from './lobby.schema';
 import * as randomstring from "randomstring";
 import { removeStringFromArray } from '../utils/utils';
-import { AccountService } from '../account/accounts.service';
+import { AccountService } from '../account/account.service';
 import { GetLobbyDto } from './dto/getLobby.dto';
 import { CreateLobbyDto } from './dto/createLobby.dto';
 import { GuestAccount } from './dto/guestAccount';

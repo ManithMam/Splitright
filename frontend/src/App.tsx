@@ -78,7 +78,7 @@ function App() {
           <div className='AppContent'>
             <Routes>
               <Route element={<ProtectedRoute isLoggendIn={isLoggedIn} />} >
-                <Route path="/home" element={<HomePage/>} />
+                <Route path="/home" element={<HomePage setIsLoggendIn={setIsLoggedIn} />} />
                 <Route path="/previousGames" element={<PrevGamesPage/>} />
                 <Route path="/gameResults/:id" element={<GameResultsPage/>} />
                 <Route path="/lobbyAdmin/:gameId" element={<LobbyPage/>} />

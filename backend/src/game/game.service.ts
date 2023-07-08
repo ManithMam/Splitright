@@ -6,7 +6,7 @@ import { UpdateGameDto } from './dto/updateGame.dto';
 import { Result } from './result/result.model';
 import { GetGameWithResults } from './dto/getGameWithResults.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { AccountService } from '../account/accounts.service';
+import { AccountService } from '../account/account.service';
 import { LobbyService } from '../lobby/lobby.service';
 import { CreateLobbyDto } from 'src/lobby/dto/createLobby.dto';
 import { GetLobbyDto } from 'src/lobby/dto/getLobby.dto';
