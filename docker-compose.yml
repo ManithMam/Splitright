@@ -30,12 +30,14 @@ services:
       retries: 3
       start_period: 40s    
 
-  frontend:
-    build:
+  frontend1:   
+    build:      
       context: frontend
+      args:
+        - _PORT=3001
       dockerfile: dockerfile
     ports:
-      - 8080:8080
+      - 3001:3001
     networks:
       - spliright-network 
     depends_on:
@@ -46,6 +48,44 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s   
+
+  frontend2:   
+    build:      
+      context: frontend
+      args:
+        - _PORT=3002
+      dockerfile: dockerfile
+    ports:
+      - 3002:3002
+    networks:
+      - spliright-network 
+    depends_on:
+      - backend
+    healthcheck:
+      test: curl --fail http://backend:3000/health
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
+
+  frontend3:   
+    build:      
+      context: frontend
+      args:
+        - _PORT=3003
+      dockerfile: dockerfile
+    ports:
+      - 3003:3003
+    networks:
+      - spliright-network 
+    depends_on:
+      - backend
+    healthcheck:
+      test: curl --fail http://backend:3000/health
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
 
 networks:
   spliright-network:
