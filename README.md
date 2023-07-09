@@ -20,7 +20,8 @@ Fun way to share expenses with friends. With a simple game with three different 
 
 ### Start
 
-1. copy the **.example.env** in the same directory and rename it to **.env**
+1. in **_\backend** copy the **.env.example** in the same directory and rename it to **.env**
+1. in **_\frontend_** copy the **.env.example** in the same directory and rename it to **.env**
 1. `docker compose up`
 
 ### Generate demo data / populate the database
@@ -28,13 +29,14 @@ Fun way to share expenses with friends. With a simple game with three different 
 POST http://localhost:3000/populateDb (no body, no token)
 
 ### Where to open 
+Docker starts 3 instances of the frontend on 3 different ports. You can log in to **only one account** per instance/port.
  - frontend 1: http://localhost:3001
  - frontend 2: http://localhost:3002
  - frontend 3: http://localhost:3003
 
 ### Login credentials
 - **username**: `jenny123`, `sam99`, `rose98`, `peter1506`, `debby777`, `john00`
-- **password**: `password`
+- **password**: `password` (for all)
 
 ### Additional
 
