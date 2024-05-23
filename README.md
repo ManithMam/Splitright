@@ -49,3 +49,12 @@ Docker starts 3 instances of the frontend on 3 different ports. You can log in t
 - **e2e**: 
   - for **Account** (backend\test\accounts.e2e-spec.ts)
   - `npm run test:e2e`
+
+### Contributors
+
+Aleksandra Gidionova
+Antti-Pekka Kuivalainen
+Arda Uslu
+Isaac Morales
+Manith Mam
+Valentin Schiffner
