@@ -1,18 +1,5 @@
 # SplitRight
-
-## Members
-
-| Full name | Student short | Matriculation number
-| ------ | ------ | ------ |
-| Aleksandra Gidionova | ag186 |43365|
-| Antti-Pekka Kuivalainen | ak366 | 5010497 |
-| Arda Uslu | au023 | 5010615 |
-| Isaac Morales | im050 | 44904 |
-| Manith Mam | mm334 | 43361 |
-| Valentin Schiffner | vs116 | 43327 |
-
-
-## Short project abstract (only one or two sentences)
+## About the project
 
 Fun way to share expenses with friends. With a simple game with three different modes (Communist, Lucky, Random), friends join a lobby and await the _**thrilling**_ moment to discover how much each of them will have to pay.
 
