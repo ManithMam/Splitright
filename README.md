@@ -52,9 +52,9 @@ Docker starts 3 instances of the frontend on 3 different ports. You can log in t
 
 ### Contributors
 
-Aleksandra Gidionova
-Antti-Pekka Kuivalainen
-Arda Uslu
-Isaac Morales
-Manith Mam
-Valentin Schiffner
+- Aleksandra Gidionova
+- Antti-Pekka Kuivalainen
+- Arda Uslu
+- Isaac Morales
+- Manith Mam
+- Valentin Schiffner
